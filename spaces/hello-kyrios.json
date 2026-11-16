@@ -1,0 +1,13 @@
+{
+  "name": "hello-kyrios",
+  "port": 7037,
+  "bind": "127.0.0.1",
+  "max_doc_bytes": 65536,
+  "max_frame_bytes": 1000000,
+  "quota_docs": 1000,
+  "retention": "append-only; eviction by receipt only (see ledger/trace-format.md)",
+  "write_key_fingerprints": [
+    "659a197bcf722a0ad27653cb2daaf0c273514b6dc7dee51d4573f41aeaed8ac6"
+  ],
+  "notes": "Bench write key on satan-sums (~/.kyrios/hello-write.key, 0600, not in repo). On lirvol this list is replaced by the fleet key fingerprint at image build (track P3)."
+}
