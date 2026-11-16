@@ -1,16 +1,23 @@
-# κύριος
+# κύριos
 
 **An operating system that manages documents and processes, deployed to Raspberry Pis.**
 
-The name is **κύριος** (*kýrios* — lord, master, the one with authority; a breath away from "curious" to an English ear). The naming logic is the operator's: what is queried is *of the authority* (κυρίου, the genitive) — put to the OS, which is itself the ultimate authority over its documents and processes.
+The name is **κύριos** (*kýrios* — of the authority; a breath away from "curious" to an English ear). The naming logic is the operator's: what is queried is *of the authority* (κυρίου, the genitive) — put to the OS, which is itself the ultimate authority over its documents and processes.
 
-> Velora is the language. κύριος is the OS that manages Velora documents and processes. The ruler and the tongue are not the same word.
+> Velora is the language. κύριος is the OS that manages Velora documents and processes. The authority and the tongue are not the same word.
+
+## Authority, authorship, and the port (the name, stated plainly)
+
+- **Authority is a collection of works.** Legal authorities are a collection of legal texts; an OS's authority is its collection of governing documents, policies, and traces. Jurisdiction is established through the **lineage** of those texts — which is why this repo is append-only: a correction is a new work in the lineage, never an edit to an old one. The unit of jurisdiction as applied to a particular case is a **clew**: the thread of works pulled to that case, the way deeds pulled to a title make the title clear.
+- **κύριos is "of the authority," not a personified Lord.** Modern morphology lends the word the masculine and calls it *Lord*; the operative sense here is the older one — authority itself. A legal authority is the collection of all legal doctrine authored into the authority. Jusisdiction is the ordered combination of laws that establish what is currently legal. The area over which an authority may enforce its laws is one aspect of the law found through the jurisdiction of the authority. I define a clew as the slice of jurisdiction which applies directly to a specific case. κύριos makes clews super easy to navigate.
+- **An operating system is a port authority. That is not cute.** It literally manages ports granting access to hardware. Only a kernel actually *has* authority in this sense, because it owns access to the software and the hardware: every grant and every refusal passes through it. Daemons serve the kernel and the kernel serves the daemons — service is reciprocal; worship is not part of the design.
+- **Do not confuse authority with authorship.** A king is vested with *authorship* — the making of works. Authors author documents and policies; the kernel grants or refuses access to them. Authorship does not grant access, and access does not author anything. κύριος holds the first kind of power (the port, the grant, the trace of both) and must never quietly claim the second.
 
 ## The four decisions (everything else follows from these)
 
 1. **Spaces with a port and key.** Content lives in named spaces. Nothing reads or writes a space except through its port, under its key. Every arrival at a port is receipted.
 2. **Set access to hardware.** Which process may touch which device, file, or space is set in advance as capability — grants *and refusals* both legible, both traced.
-3. **Processors are documents.** The programs that process documents are themselves documents (Velora programs): readable, versioned, on the same shelf as what they process. "Why did this change?" is answered by opening the processor.
+3. **Processes are documents.** The programs that process documents are themselves documents (Velora programs): readable, versioned, on the same shelf as what they process. "Why did this change?" is answered by opening the process document.
 4. **Everything leaves a trace.** Append-only. A correction is a new trace laid over the old, never an edit. `created_at` does not get overwritten.
 
 ## Foundations (decided, on record)
