@@ -53,7 +53,10 @@ our code, first instructions after the firmware, no Linux anywhere.
 hello-kyrios, filed under `docs/witness/`. Hello has now been said by us,
 not by Debian on our behalf.
 
-### B2 — Time and interrupts *(the port authority learns to say no, on schedule)*
+### B2 — Time and interrupts ✅ PASS 2026-11-16 *(the port authority learns to say no, on schedule)*
+
+Receipt: `docs/witness/rung-b2-20261116.md` — TICKS frozen at 100,
+ESR `…F2000042` (BRK, imm `0x42`) held on screen.
 GIC initialised, system timer ticking, exception vector table in assembly
 with C handlers; ACT LED or an on-screen heartbeat under timer control.
 **Pass:** a measured 10 Hz heartbeat (± tolerance read from the timer, not
