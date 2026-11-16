@@ -1,0 +1,7 @@
+# kyrios B1 boot config — valseir (Raspberry Pi 4 Model B, BCM2711).
+# Firmware loads OUR kernel8.img and nothing else: no Linux, no initramfs.
+arm_64bit=1
+kernel=kernel8.img
+disable_overscan=1
+# Keep the firmware's hands off the display mode beyond the mailbox request.
+hdmi_force_hotplug=1

@@ -1,0 +1,9 @@
+# Built and extracted artifacts are rebuilt/refetched, never committed:
+# make reproduces kernel8.img deterministically; extract_firmware.py
+# re-extracts the firmware blobs from the checksum-verified Pi OS image.
+build/
+kernel8.img
+boot-sd/*.elf
+boot-sd/*.dat
+boot-sd/*.dtb
+boot-sd/*.bin
