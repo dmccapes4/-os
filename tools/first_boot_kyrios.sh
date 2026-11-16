@@ -46,6 +46,18 @@ if [ -n "$NVME" ]; then
   mount "$PART" "$LEDGER_DIR" || {
     log "failed to mount $PART; falling back to SD ledger"
   }
+  # Persist the ledger mount across reboots.
+  if grep -q "$LEDGER_DIR" /etc/fstab 2>/dev/null; then
+    log "fstab entry for $LEDGER_DIR already present"
+  else
+    LEDGER_UUID="$(lsblk -no UUID "$PART")"
+    if [ -n "$LEDGER_UUID" ]; then
+      echo "UUID=$LEDGER_UUID $LEDGER_DIR ext4 defaults,noatime,nofail 0 2" >> /etc/fstab
+      log "persisted $PART in fstab as UUID=$LEDGER_UUID"
+    else
+      log "could not read UUID for $PART; fstab unchanged"
+    fi
+  fi
 else
   log "no NVMe found; ledger lives on SD at $LEDGER_DIR"
 fi
