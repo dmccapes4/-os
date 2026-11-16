@@ -11,7 +11,7 @@
 2. Computes its own SHA-256 hash.
 3. Builds a receipt describing an `arrive` → `grant` event at the `hello-kyrios` space.
 4. Appends the receipt via `ledger/receipt.py`.
-5. Writes a short status file to `/var/lib/kyiros/processors/hello-kyrios.out`.
+5. Writes a short status file to `/var/lib/kyrios/processors/hello-kyrios.out`.
 
 ## Properties
 
@@ -21,7 +21,7 @@
 
 ## Why this shape
 
-v0.0.1 must prove that κύριος can run a processor as a document and leave a trace. It must not reproduce the `full_metal_packet.py` trap: open-ended, HITL-driven, debug loops. `hello-kyronos` is intentionally trivial so the trace is the only interesting output.
+v0.0.1 must prove that κύριος can run a processor as a document and leave a trace. It must not reproduce the `full_metal_packet.py` trap: open-ended, HITL-driven, debug loops. `hello-kyrios` is intentionally trivial so the trace is the only interesting output.
 
 ## Clew
 

@@ -1,6 +1,8 @@
 # Linux distro decisions — κύριος development host and Pi base
 
 > **NAMING (2026-11-14, operator, controlling):** The OS is called **κύριος** (*kýrios* — “curious” to an English ear; lord, master, the one with authority). The naming logic is the operator's: what is queried is *of the authority* (κυρίου, the genitive — of the lord), put to the OS which is itself the ultimate authority over its documents and processes. Earlier drafts of this report called it "Velora OS"; that name is retired for the OS. **Velora remains the language** (and its programs/documents are what κύριος manages); the OS and the language are no longer the same word.
+>
+> **Correction (2026-11-16, operator, controlling over the gloss above):** κύριος is **of the authority** — authority being a collection of works, jurisdiction established through the lineage of texts, applied to a case as a **clew**. Modern morphology lends the word the masculine and calls it *Lord*; no personified ruler is meant. The OS is a **port authority** in the literal sense: it manages ports granting access to hardware, and only the kernel has this authority because it owns access to software and hardware. A king is vested with **authorship**; do not confuse the two. See `-os/README.md`, "Authority, authorship, and the port".
 
 **Filed:** 2026-11-14 · **Question from:** the operator, after the Haiku disk incident
 **Question asked:** (1) Should Kali Linux be the development OS for κύριος? (2) Should Kali be the κύριος base on the Pis?
