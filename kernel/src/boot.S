@@ -48,6 +48,10 @@ from_el2:
     eret
 
 at_el1:
+    // Exception vector table (B2) — installed before any C runs.
+    ldr     x0, =vectors
+    msr     vbar_el1, x0
+
     // Stack grows down from just below the kernel image.
     adr     x0, _start
     mov     sp, x0
