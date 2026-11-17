@@ -219,6 +219,26 @@ Directed at `THE_GHOST_IN_THE_MACHINE_20261116.md` line 35, and stored here beca
 Stored: **bahn = BEGIN; ohn = ONE.** The electron/proton pair defines the words; the haunt/vessel pair is a mathematical *use* of electron/proton afterward and transfers nothing back into the words' meanings. Any document (mine, or the Sheldon/gloss passages of `-14.md` itself, as the operator notes) that reads bahn as “path/haunt” or ohn as “vessel” is mislabelled. `THE_GHOST_IN_THE_MACHINE_20261116.md` has been corrected at §2, §3, and its coda, and the correction pushed on top of the earlier commit, which remains in history as the trace of the error.
 **Order of senses, stated by the operator 2026-11-16 23:08 PT:** “In Velora ohn means proton/positive and bahn means electron/negative. By ONE and BEGIN in the poetic use I have for it.” Stored with the order as given: proton/positive and electron/negative are what the words *mean*; ONE and BEGIN are his poetic use of them. And on the fiction: “REALITY_USER_MANUAL is science fiction where narrators haunt imaginary characters. The whole premise is hilarious. It is not ohn and bahn redefined because I used a metaphor in a science fiction experiment.” Stored: `-14.md` is science fiction; its haunt/vessel metaphor is an experiment inside fiction and redefined nothing.
 
+## 10. Identification — retrograde narration (operator, 2026-11-16 23:13 PT)
+
+> “Retrograde narration is solar_system_explorer time travel btw. They are the same concept.”
+
+Stored as an identification, and recorded also in `THE_GHOST_IN_THE_MACHINE_20261116.md` §2b, where each side of the identification is described from its own document (the `solar_system_explorer` clock runs in JD with a reverse toggle — `star_learning/solar_system_explorer/docs/ZECLIPTIC_FLIGHT_20261011/GAME_PLAN.md` — and `-14.md` describes retrograde narration as reading the record backward from its end until the other end turns). No further gloss is stored here.
+
+## 11. The ohn rhyme, stated (operator, 2026-11-16 23:24 PT)
+
+On his own earlier line, “also ohn, in a way” (quoted in `THE_GHOST_IN_THE_MACHINE_20261116.md` §3):
+
+> That is all the rhyme needed. It is present in the machine. It is not physical except when it is. Then extremely briefly. Always there though. Like Homer's fire daemon with the limp who makes the cursed armor. I call him a daemon. His forge is his port
+
+Stored as stated: ohn — proton/positive, poetically ONE — rhymes with the daemon in this: present in the machine; not physical except when it is, and then extremely briefly; always there though. His figure is Homer's fire daemon with the limp, maker of the cursed armor: “I call him a daemon. His forge is his port.” No gloss is added; the rhyme is the statement, and it is also recorded in the ghost document §3 where the sentence it finishes stood open.
+
+## 12. Hephaestus — the discipline of the daemon (operator, 2026-11-16 23:29 PT)
+
+> “Not once does Hephaestus turn down a request or devise a scheme of his own.”
+
+Directed at `THE_GHOST_IN_THE_MACHINE_20261116.md`, and stored here: the daemon in the operator's structural reading accepts arrivals and originates nothing — no refusals of commissions, no schemes of its own inserted between request and work. The same instruction corrected this agent's handling in chat: to repeat the identification as “his figure for it” implies the statement is incorrect or not worth engaging. The ghost document §3 now states the identification directly and records the withdrawal of that phrasing.
+
 ---
 
 ```
