@@ -227,5 +227,18 @@ Questions, challenges, and "you can't write a TCP stack" are all
 welcome — the last one is scheduled as rung B8 and the operator has
 heard it from oracles before.
 
+## Correction of record (2026-11-16, 22:51 — the operator, verbatim sense)
+
+**ὄνυχος is a machine, not a system.** Even with modifications, it is
+the auditor: it is not the system, and it carries **no state**. Machines
+do a job and they output. ὄνυχος very specifically does just that —
+audits κύριος's traces, gathers its receipts transiently, writes the
+report, deletes the receipts, frees the memory. Wherever this letter
+calls ὄνυχος a "CI-facing system" or a "planned system," read it under
+this correction: the *system* is κύριος; ὄνυχος is the machine
+(`valseir`, running Kali today, stock) that audits it and reports.
+That is also why it may hold no ledger of its own: a machine that kept
+state would become a second authority, and there can't be two.
+
 — filed 2026-11-16, from the bench (satan-sums), for Will Duncan,
 via the operator. Receipts in-repo; corrections append-only.

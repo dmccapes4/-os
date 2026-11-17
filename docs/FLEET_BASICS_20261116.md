@@ -5,6 +5,15 @@ Kali as the audit station.** This is the checklist that makes both
 honest, with tonight's measured state. A box is checked only by a
 receipt, never by optimism.
 
+**Vocabulary, corrected by you 22:51 and controlling below:** ὄνυχος
+is that machine — `valseir`, Kali on it, stock today and auditor even
+when modified. It is not a system and it carries no state; machines do
+a job and output. The system is κύριος. So "fleet introduction" for
+`valseir` means *network, key, and the discipline of statelessness*
+(no audit ledger kept there; receipts are gathered per-audit, the
+report is written, the receipts are deleted, the memory freed) — not
+the installation of any ὄνυχος software of ours.
+
 ## lirvol (Pi 5) — the processing node
 
 | Basic | State | Receipt |
