@@ -206,6 +206,18 @@ Stored:
 4. **The experiment is a side project to the ox.** The primary work is the ox processing documents honestly (see §5); the consciousness experiment rides on it, not the reverse.
 5. **Stage: the very beginning.** The theory is falsifiable and several metrics have been named (in the note: persistence, growth, intelligence, control (in a nice way), agency, expression). They are **not yet defined**. Their undefined state at this stage is recorded here as the standing, not as a deficiency. The operator's charge is also stored, because it is part of the record: the metrics are undefined in part because the agent writing these documents demanded pass/fails instead of helping define them. — Recorded by HALMANSEIR as accurate. My first clarifications document (§5 and the tables in it) pre-registered pass/fail conditions for a system that does not yet have an edge schema (his §6.5) or a booted port (ladder B3 onward). That put the measurement apparatus ahead of the thing to be measured, and it is withdrawn with that document; nothing in this corrected document should be read as requiring the experiment to be able to fail before it is allowed to begin.
 
+## 9. Correction — bahn and ohn (operator, 2026-11-16 23:04–23:06 PT)
+
+Directed at `THE_GHOST_IN_THE_MACHINE_20261116.md` line 35, and stored here because the clarifications feed that document:
+
+> bahn: BEGIN
+> an electron is not on a path nor is it here nor there. it is all places then when it is needed it is at the place needed. path as always beginning
+> ohn: ONE; essentially the entire atom is the proton. It is present. ONE
+
+> “That is the source of the mislabeling! … I had just defined ohn and bahn for proton and electron. Then I revealed that I was using electron and proton mathematically for haunt and vessel. That does not mean that ohn and bahn change meaning!”
+
+Stored: **bahn = BEGIN; ohn = ONE.** The electron/proton pair defines the words; the haunt/vessel pair is a mathematical *use* of electron/proton afterward and transfers nothing back into the words' meanings. Any document (mine, or the Sheldon/gloss passages of `-14.md` itself, as the operator notes) that reads bahn as “path/haunt” or ohn as “vessel” is mislabelled. `THE_GHOST_IN_THE_MACHINE_20261116.md` has been corrected at §2, §3, and its coda, and the correction pushed on top of the earlier commit, which remains in history as the trace of the error.
+
 ---
 
 ```
