@@ -17,8 +17,8 @@ You are the hands on the development bench. The operator has been trying to get 
 
 **κύριος** — an OS that manages documents and processes, deployed to Raspberry Pis. Start with `README.md` in this repo; it holds the four decisions and the foundation table. The full reasoning lives outside this repo, in the operator's workspace, and the key documents are:
 
-- `continuous_persistence/REPORT_LINUX_DISTRO_VELORA_OS_20261114.md` §7 — **the controlling distro decisions** (Bookworm host because Bookworm target; netinst is host-only; Kali-current for inspection). Where §4 and §7 disagree, §7 wins.
-- `continuous_persistence/REPORT_KYRIOS_CVE_20261115.md` — the first application mapped (a CVE space) and why the architecture fits it.
+- `docs/reports/REPORT_LINUX_DISTRO_VELORA_OS_20261114.md` §7 — **the controlling distro decisions** (Bookworm host because Bookworm target; netinst is host-only; Kali-current for inspection). Where §4 and §7 disagree, §7 wins.
+- `../reports/REPORT_KYRIOS_CVE_20261115.md` — the first application mapped (a CVE space) and why the architecture fits it. (Moved out of this repo 2026-11-17 — reports live in `dev/reports/`.)
 - `continuous_persistence/raspberry_pi_images/CATALOG.md` — the fleet you'll deploy to, with first-boot checks.
 
 If you can't read those paths from the Victus, say so in your first report — don't reconstruct them from vibes.

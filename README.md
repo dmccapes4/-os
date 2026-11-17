@@ -24,7 +24,7 @@ The name is **κύριos** (*kýrios* — of the authority; a breath away from "
 
 | Layer | Decision | Source |
 |---|---|---|
-| Dev host | Debian 12 **Bookworm** amd64 (netinst ISO is host installer only — never an SD image) | `continuous_persistence/REPORT_LINUX_DISTRO_VELORA_OS_20261114.md` §7 |
+| Dev host | Debian 12 **Bookworm** amd64 (netinst ISO is host installer only — never an SD image) | `docs/reports/REPORT_LINUX_DISTRO_VELORA_OS_20261114.md` §7 |
 | Target base | Debian 12 **Bookworm** arm64 — Buildroot (default) or debootstrap-arm64 + Pi firmware/boot | Composer's stack summary, adopted in the same report |
 | Inspection | Current Kali snapshot, live USB — inspect without tripping kernel updates on the inspected system | operator, 2026-11-14 |
 | Fidelity rule | Bookworm builds Bookworm (glibc 2.36 target; a Trixie host's 2.41 binaries refuse to load) | distro report §7 |
@@ -35,7 +35,7 @@ The name is **κύριos** (*kýrios* — of the authority; a breath away from "
 - **Pi + touchscreen** — supervisor / face.
 - **Pico** — hardware watchdog (RUN/EN pins).
 - **e-Paper** — zero-power status face.
-- First application mapped: a CVE space (see `continuous_persistence/REPORT_KYRIOS_CVE_20261115.md`) — provenance at stream speed: what changed, when, on whose authority, what did it say before.
+- First application mapped: a CVE space (see `../reports/REPORT_KYRIOS_CVE_20261115.md`, moved out of this repo 2026-11-17) — provenance at stream speed: what changed, when, on whose authority, what did it say before.
 
 ## Layout of this repo
 
