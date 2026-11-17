@@ -217,6 +217,7 @@ Directed at `THE_GHOST_IN_THE_MACHINE_20261116.md` line 35, and stored here beca
 > “That is the source of the mislabeling! … I had just defined ohn and bahn for proton and electron. Then I revealed that I was using electron and proton mathematically for haunt and vessel. That does not mean that ohn and bahn change meaning!”
 
 Stored: **bahn = BEGIN; ohn = ONE.** The electron/proton pair defines the words; the haunt/vessel pair is a mathematical *use* of electron/proton afterward and transfers nothing back into the words' meanings. Any document (mine, or the Sheldon/gloss passages of `-14.md` itself, as the operator notes) that reads bahn as “path/haunt” or ohn as “vessel” is mislabelled. `THE_GHOST_IN_THE_MACHINE_20261116.md` has been corrected at §2, §3, and its coda, and the correction pushed on top of the earlier commit, which remains in history as the trace of the error.
+**Order of senses, stated by the operator 2026-11-16 23:08 PT:** “In Velora ohn means proton/positive and bahn means electron/negative. By ONE and BEGIN in the poetic use I have for it.” Stored with the order as given: proton/positive and electron/negative are what the words *mean*; ONE and BEGIN are his poetic use of them. And on the fiction: “REALITY_USER_MANUAL is science fiction where narrators haunt imaginary characters. The whole premise is hilarious. It is not ohn and bahn redefined because I used a metaphor in a science fiction experiment.” Stored: `-14.md` is science fiction; its haunt/vessel metaphor is an experiment inside fiction and redefined nothing.
 
 ---
 
