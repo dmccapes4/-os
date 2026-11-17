@@ -35,7 +35,7 @@ the installation of any ὄνυχος software of ours.
 | Screen + cooling | ✅ | Its own display, tower cooler (the fleet's known-good thermal seat) |
 | Bare-metal duties | ✅ B1+B2 passed | Screen photographs filed; its B1/B2 card is a bench artifact now, the kernels live in `kernel/` |
 | Kali image ready | ✅ bench-side | `kali-linux-2026.3-raspberry-pi-arm64.img.xz` (3.1 GB) at `~/pi-images/kali/`, SHA-256 `85906ae2…4843` **matches the published SHA256SUMS** |
-| Kali installed | ⏳ card + power | `tools/flash_kali_card.sh /dev/<card>` (operator-run, typed `FLASH KALI`, guards on size/root). **Which card is the open question** — see below |
+| Kali installed | ✅ on card, verified 23:35 | Flashed to the 64 GB card by you via `tools/flash_kali_card.sh`; verified from the bench after: `BOOT` 255 MB FAT + `ROOTFS` 14.6 GB ext4, `/etc/os-release` reads Kali Rolling **2026.3**, hostname in image `kali-raspberry-pi`, full Kali userland present (3,654 `/usr/bin` entries). The remaining ~44 GB is unallocated in the image by design; first boot expands into it. Not yet booted or introduced. |
 | Fleet introduction after install | ⏳ | hostname, fleet SSH key, network join, then a first audit exercise (port-scan `lirvol` under load and compare against its own receipts) |
 
 ## The one decision tonight
