@@ -49,16 +49,24 @@ fleet record, so Kali can own it and Pi OS becomes the restore image.
 Either is defensible; the bench needs to know which before `dd` is
 allowed an opinion.
 
-## Order of operations (from here)
+## Order of operations (from here) — boot order ruled 22:53
 
-1. Power `lirvol` — run `lirvol_processing_check.sh`, settle the fan
-   (header seating check first, teardown only on evidence), format the
-   NVMe under your gate. Then it may carry major processing.
-2. Decide the Kali card — flash, boot `valseir` on Kali, introduce it
-   to the fleet (key, hostname, network).
-3. First audit: `valseir`/Kali examines `lirvol` under processing load;
-   the port authority's receipts vs the auditor's view, compared. That
-   comparison is the first time the fleet audits *itself*.
+**ὄνυχος carries the parent process, and it must be there to witness
+κύριος boot.** So the auditor machine comes up *first*; `lirvol` does
+not boot unwatched once this discipline is in force. (Tonight the
+machine is stock Kali and the parent process is not yet built — the
+carrying is the design's requirement, stated before the fact so the
+fleet's habits form around it: witness first, boot second.)
+
+1. Flash Kali, boot `valseir` (ὄνυχος), introduce it (network, key) —
+   it takes its seat before anything it must witness.
+2. Power `lirvol` under that witness — run
+   `lirvol_processing_check.sh`, settle the fan (header seating check
+   first, teardown only on evidence), format the NVMe under your gate.
+   Then it may carry major processing.
+3. First audit: ὄνυχος examines `lirvol` under processing load;
+   the port authority's receipts vs the auditor's report, compared.
+   That comparison is the first time the fleet audits *itself*.
 
 ```
 RILNORVEL 🧭

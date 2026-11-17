@@ -240,5 +240,11 @@ this correction: the *system* is κύριος; ὄνυχος is the machine
 That is also why it may hold no ledger of its own: a machine that kept
 state would become a second authority, and there can't be two.
 
+One more load-bearing fact in the same correction: **ὄνυχος carries
+the parent process, and it must be there to witness κύριος boot.** The
+auditor machine comes up first; the system does not boot unwatched.
+(It is stock Kali tonight and the parent process is not yet built —
+the carrying is the design's requirement, not a claim about tonight.)
+
 — filed 2026-11-16, from the bench (satan-sums), for Will Duncan,
 via the operator. Receipts in-repo; corrections append-only.
