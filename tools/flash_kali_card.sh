@@ -16,7 +16,7 @@ SUMS="$HOME/pi-images/kali/SHA256SUMS"
 [ -b "$DEV" ] || { echo "not a block device: $DEV" >&2; exit 2; }
 [ -f "$IMG" ] || { echo "image missing: $IMG" >&2; exit 2; }
 echo "--- verifying image checksum ---"
-(cd "$(dirname "$IMG")" && grep raspberry-pi-arm64.img.xz SHA256SUMS | sha256sum -c -)
+(cd "$(dirname "$IMG")" && grep "kali-linux-2026.3-raspberry-pi-arm64\.img\.xz$" SHA256SUMS | sha256sum -c -)
 
 SIZE_BYTES="$(lsblk -bno SIZE "$DEV" | head -1)"
 SIZE_GB=$((SIZE_BYTES / 1000000000))
