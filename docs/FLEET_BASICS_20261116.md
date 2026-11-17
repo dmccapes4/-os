@@ -58,6 +58,14 @@ machine is stock Kali and the parent process is not yet built — the
 carrying is the design's requirement, stated before the fact so the
 fleet's habits form around it: witness first, boot second.)
 
+**Ruled further, 22:55: the watching is constant.** ὄνυχος is not a
+periodic visitor; it is on the scene when something happens. `valseir`
+will likely run many processes, balanced — the watch itself spread
+lightly enough that watching never becomes the incident it is there to
+witness. Boot-witnessing is a consequence of this, not a separate
+ceremony: a machine that is always there is there at the boot too.
+Constant presence, no retained state: those two together are the job.
+
 1. Flash Kali, boot `valseir` (ὄνυχος), introduce it (network, key) —
    it takes its seat before anything it must witness.
 2. Power `lirvol` under that witness — run
