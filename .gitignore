@@ -3,3 +3,5 @@ __pycache__/
 *.img
 *.iso
 _build/
+# Vendored PDF deps for tools/gen_howto_pdf.py (platform .so; install locally)
+tools/pylibs/
