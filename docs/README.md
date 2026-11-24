@@ -8,7 +8,12 @@ the build decisions they rest on.
 - `EXPERIMENT_LADDER_KYRIOS_20261116.md` — behavioural oracle for the ladder
 - `BENCH_STATE_20261116.md`, `REPORT_READINESS_KYRIOS_20261116.md` — bench/toolchain receipts
 - `FIRST_BOOT_KYRIOS_20261116.md`, `FLEET_BASICS_20261116.md` — node receipts
-- `reports/REPORT_LINUX_DISTRO_VELORA_OS_20261114.md` — controlling distro decision (§7) for the build host/target; kept here because it is a build decision, not a survey
+- `KYRIOS_TECHNICAL_SPECIFICATION_v0.0.1.md` — draft specification of κύριος (revised 2026-11-17 after the operator's review)
+- `ONYCHOS_TECHNICAL_SPECIFICATION_v0.0.1.md` — draft specification of ὄνυχος
+- `kyrios_tech_spec_v001_review.md` — the operator's review of the first κύριος draft
+- `HARDWARE_INVENTORY_20261123.md` — fleet/bench hardware identified from photographs
+- `HOW_TO_INSTALL_DEBUG_HARDWARE_20261123.md` (+ `.pdf`) — debug-probe wiring for valseir→lirvol
+- `maths_by_computers.md`, `poorly_modeled_decay_example.md`, `still_bad_decay.md` — integer/decay notes for the store
 - `witness/` — rung witness receipts and photographs
 
 ## Moved out 2026-11-17 (operator's order)
@@ -21,6 +26,10 @@ To `dev/reports/`:
 
 - `REPORT_CVELISTV5_0XOSPREY_20261115.md` (was `docs/reports/`)
 - `REPORT_KYRIOS_CVE_20261115.md` (was `docs/reports/`)
+
+To `dev/conceptual_language/` (2026-11-23; SHA-256 verified byte-identical):
+
+- `REPORT_LINUX_DISTRO_VELORA_OS_20261114.md` (was `docs/reports/` — controlling distro decision §7)
 
 To `dev/reflections/`:
 
