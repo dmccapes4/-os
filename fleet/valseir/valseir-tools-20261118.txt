@@ -1,0 +1,20 @@
+node: kali-raspberrypi
+2026-11-18T20:11:13+00:00
+Raspberry Pi 4 Model B Rev 1.2
+PRETTY_NAME="Kali GNU/Linux Rolling"
+VERSION="2026.3"
+6.12.34+rpt-rpi-v8
+== apt sources ==
+URIs: http://http.kali.org/kali/
+Suites: kali-rolling
+Components: main contrib non-free non-free-firmware
+== package versions ==
+gdb-multiarch 18.1-3 ii 
+minicom 2.11.1-2 ii 
+mitmproxy 12.2.3-0kali5 ii 
+openocd 0.12.0-4 ii 
+picocom 2024-07-0.1 ii 
+screen 5.0.2-1 ii 
+tcpdump 4.99.6-2 ii 
+telnet 0.17+2.8-4 ii 
+wireshark 4.6.9-1+b1 ii 

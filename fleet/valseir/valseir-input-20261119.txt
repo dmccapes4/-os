@@ -1,0 +1,32 @@
+node: kali-raspberrypi
+2026-11-19T00:32:05+00:00
+== package versions ==
+bluez 5.87-5 ii 
+bluez-tools 2.0~20170911.0.7cb788c-4+b3 ii 
+evtest 1:1.36-1+b1 ii 
+libinput-tools 1.31.3-1 ii 
+usbutils 1:019-1+b1 ii 
+== bluetooth service ==
+enabled
+inactive
+bluetoothctl: 5.87
+== bluetooth adapters (none expected: onboard BT is off) ==
+== usb devices ==
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+== input devices ==
+N: Name="vc4-hdmi-0"
+N: Name="vc4-hdmi-0 HDMI Jack"
+N: Name="vc4-hdmi-1"
+N: Name="vc4-hdmi-1 HDMI Jack"
+N: Name="10-0038 generic ft5x06 (00)"
+total 0
+drwxr-xr-x 2 root root     100 Nov 19 00:26 by-path
+crw-rw---- 1 root input 13, 66 Nov 18 23:14 event2
+crw-rw---- 1 root input 13, 68 Nov 18 23:14 event4
+crw-rw---- 1 root input 13, 69 Nov 18 23:14 event5
+crw-rw---- 1 root input 13, 70 Nov 18 23:14 event6
+crw-rw---- 1 root input 13, 71 Nov 18 23:14 event7
+crw-rw---- 1 root input 13, 63 Nov 18 23:14 mice
+crw-rw---- 1 root input 13, 33 Nov 18 23:14 mouse1
