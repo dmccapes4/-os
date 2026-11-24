@@ -1,0 +1,21 @@
+# kyrios v0.0.0 on lirvol (development build) (Raspberry Pi 5, BCM2712).
+# The bootloader in the board's EEPROM reads this file, loads the image
+# named here at 0x80000 and starts it. No Linux is involved.
+
+arm_64bit=1
+kernel=kyrios-v0.0.0.img
+kernel_address=0x80000
+
+# The image is not Linux. Skip the check that looks for a compatible one.
+os_check=0
+
+# Serial on the 40-pin header (pin 8 transmit, pin 10 receive, pin 6
+# ground): the firmware sets RP1 UART0 to 115200 and leaves RP1 and its
+# PCIe link running when it starts the image.
+enable_rp1_uart=1
+pciex4_reset=0
+
+# HDMI: a 32-bit framebuffer from the firmware.
+disable_overscan=1
+framebuffer_depth=32
+framebuffer_ignore_alpha=1
