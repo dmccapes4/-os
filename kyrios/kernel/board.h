@@ -38,6 +38,16 @@ void board_eth_poll(void);
 /* Called once per turn of the main loop when there was nothing to do. */
 void board_idle(void);
 
+/* Switch the HDMI surface from the commissioning panel to scrolling
+ * terminal mode.  After this call con_putc output appears on HDMI as well
+ * as the UARTs, with the framebuffer scrolling when the last row is full.
+ * No-op when no framebuffer was allocated. */
+void board_hdmi_terminal(void);
+
+/* SoC temperature in milli-degrees Celsius, or a negative value when the
+ * firmware mailbox does not answer. */
+s64 board_temperature_mC(void);
+
 /* Stop the processor. Does not return. */
 void board_stop(void);
 

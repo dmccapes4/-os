@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../kernel/board.h"
+#include "../kernel/diag.h"
 #include "host.h"
 
 #define OUT_CAP (64u << 20)
@@ -60,7 +61,21 @@ void board_eth_report(void) { con_puts("ethernet: the bench board has no Etherne
 void board_eth_poll(void) { }
 
 void board_idle(void) { }
+void board_hdmi_terminal(void) { }     /* no HDMI on the bench */
+s64 board_temperature_mC(void) { return 42000; }   /* fixed bench reading */
 void board_stop(void) { fprintf(stderr, "board_stop\n"); exit(2); }
+
+/* Diagnostic sinks on the bench: one stream (captured console). HDMI
+ * clear is a no-op; panel text still flows through the write sink. */
+void diag_sink_putc(unsigned sinks, char c) {
+    (void)sinks;
+    con_putc(c);
+}
+void diag_sink_write(unsigned sinks, const char *s, u64 n) {
+    (void)sinks;
+    while (n--) con_putc(*s++);
+}
+void diag_hdmi_clear(void) { }
 
 int host_show;
 

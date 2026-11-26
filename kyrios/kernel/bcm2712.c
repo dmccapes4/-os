@@ -24,6 +24,7 @@
  */
 #include "lib.h"
 #include "board.h"
+#include "diag.h"
 #include "font8x8.h"
 
 #define MMIO32(a) (*(volatile u32 *)(u64)(a))
@@ -179,6 +180,28 @@ static void fb_glyph(u32 col, u32 row, u8 c) {
             fb_pixel(col * CELL + gx, row * CELL + gy, (g[gy >> 1] >> (gx >> 1)) & 1);
 }
 
+/* Shift the visible surface up by one character-cell row and clear the
+ * vacated bottom row with the background colour.  The MMU and data cache
+ * are off, so this is an uncached byte copy of the whole framebuffer minus
+ * one row; expect ~10–20 ms on a 1920×1080 surface at cold-memory speeds.
+ * That is acceptable for a terminal but would be wrong for animation. */
+static void fb_scroll(void) {
+    u64 row_bytes = (u64)CELL * fb.pitch;
+    u64 copy_sz   = (u64)(fb.rows - 1) * row_bytes;
+    u8  *last_row = fb.base + (u64)(fb.rows - 1) * row_bytes;
+    u64  i;
+
+    memcpy(fb.base, fb.base + row_bytes, copy_sz);
+
+    if (fb.depth == 32) {
+        volatile u32 *p = (volatile u32 *)(void *)last_row;
+        for (i = 0; i < (u64)CELL * fb.width; i++) p[i] = 0xff101820u;
+    } else {
+        volatile u16 *p = (volatile u16 *)(void *)last_row;
+        for (i = 0; i < (u64)CELL * fb.width; i++) p[i] = 0x10c4u;
+    }
+}
+
 static void fb_putc(char c) {
     if (!fb.up || c == '\r') return;
     if (c != '\n') {
@@ -186,7 +209,10 @@ static void fb_putc(char c) {
         if (++fb.col < fb.cols) return;
     }
     fb.col = 0;
-    if (++fb.row >= fb.rows) fb_clear();        /* a full screen starts again at the top */
+    if (++fb.row >= fb.rows) {
+        fb_scroll();
+        fb.row = fb.rows - 1;   /* stay on the last row; scroll brought it blank */
+    }
 }
 
 static u32 firmware_revision;
@@ -232,11 +258,12 @@ static int fb_setup(void) {
     return 1;
 }
 
-/* ---- console --------------------------------------------------------- */
+/* ---- console / diagnostic sinks -------------------------------------- */
 
 /* Text written before a surface is up is kept and replayed on it. */
 static char early[4096];
 static u64  early_len;
+static int  panel_mode;     /* HDMI paints only via diag_refresh */
 
 static void surface_out(int which, char c) {
     if (which == 1) uart_putc(&debug_uart, c);
@@ -249,11 +276,32 @@ static void replay(int which) {
     for (i = 0; i < early_len; i++) surface_out(which, early[i]);
 }
 
+/* Independent backends: a stall or missing surface must not stop others. */
+void diag_sink_putc(unsigned sinks, char c) {
+    if (sinks & DIAG_SINK_UART_DEBUG) uart_putc(&debug_uart, c);
+    if (sinks & DIAG_SINK_UART_GPIO)  uart_putc(&header_uart, c);
+    if (sinks & DIAG_SINK_HDMI)       fb_putc(c);
+}
+
+void diag_sink_write(unsigned sinks, const char *s, u64 n) {
+    while (n--) {
+        char c = *s++;
+        if (c == '\n') diag_sink_putc(sinks, '\r');
+        diag_sink_putc(sinks, c);
+    }
+}
+
+void diag_hdmi_clear(void) {
+    if (fb.up) fb_clear();
+}
+
 static void raw_putc(char c) {
     if (early_len < sizeof early) early[early_len++] = c;
+    /* UARTs always get the stream. HDMI switches to panel mode once the
+     * commissioning console owns the screen. */
     uart_putc(&debug_uart, c);
     uart_putc(&header_uart, c);
-    fb_putc(c);
+    if (!panel_mode) fb_putc(c);
 }
 
 void con_putc(char c) {
@@ -316,7 +364,104 @@ u8 *board_memory(u64 *length) {
     return (u8 *)KMEM_BASE;
 }
 
-void board_idle(void) { }
+/* Firmware mailbox tag 0x00030006 (GET_TEMPERATURE): temperature id 0 is
+ * the SoC; the value is milli-degrees Celsius. Source: Raspberry Pi
+ * firmware mailbox property interface. */
+#define MBOX_GET_TEMPERATURE 0x00030006u
+#define THERMAL_WARN_mC      75000LL
+#define THERMAL_FAULT_mC     85000LL
+
+void board_stop(void);
+
+s64 board_temperature_mC(void) {
+    mb[0] = 8 * 4;
+    mb[1] = 0;
+    mb[2] = MBOX_GET_TEMPERATURE;
+    mb[3] = 8;
+    mb[4] = 4;
+    mb[5] = 0;          /* temperature id: SoC */
+    mb[6] = 0;          /* value (response) */
+    mb[7] = 0;
+    if (!mbox_call()) return -1;
+    if (mb[5] != 0) return -1;
+    return (s64)(u32)mb[6];
+}
+
+static void temp_show(s64 mC) {
+    u64 whole, frac;
+    if (mC < 0) {
+        con_puts("unavailable");
+        return;
+    }
+    whole = (u64)mC / 1000;
+    frac  = ((u64)mC % 1000) / 100;
+    con_dec(whole);
+    con_putc('.');
+    con_dec(frac);
+    con_puts(" C");
+}
+
+static void board_thermal_report(const char *when) {
+    s64 mC = board_temperature_mC();
+    char detail[40];
+    struct kbuf b;
+
+    con_puts("temperature");
+    if (when) {
+        con_puts(" (");
+        con_puts(when);
+        con_puts(")");
+    }
+    con_puts(": ");
+    temp_show(mC);
+    con_putc('\n');
+
+    if (mC < 0) {
+        diag_set(DIAG_TEMP, DIAG_FAIL, "mailbox no answer");
+        diag_set(DIAG_THERMAL, DIAG_FAIL, "no temperature");
+        diag_failing("mailbox_get_temperature");
+        return;
+    }
+    kbuf_init(&b, detail, sizeof detail);
+    kbuf_dec(&b, (u64)mC / 1000);
+    kbuf_putc(&b, '.');
+    kbuf_dec(&b, ((u64)mC % 1000) / 100);
+    kbuf_put(&b, " C");
+    diag_set(DIAG_TEMP, DIAG_OK, detail);
+
+    if (mC >= THERMAL_FAULT_mC) {
+        con_puts("thermal fault: SoC at or above 85 C. Stopping.\n");
+        diag_set(DIAG_THERMAL, DIAG_FAIL, "FAULT >=85C");
+        diag_failing("thermal_fault");
+        board_stop();
+    }
+    if (mC >= THERMAL_WARN_mC) {
+        con_puts("thermal warning: SoC at or above 75 C. Fan is at commissioning max.\n");
+        diag_set(DIAG_THERMAL, DIAG_OK, "WARN >=75C fan max");
+    } else {
+        diag_set(DIAG_THERMAL, DIAG_OK, "armed 75/85");
+    }
+    diag_stage("thermal");
+}
+
+void board_idle(void) {
+    static u64 next_thermal;
+    u64 now = board_counter();
+    u64 until;
+
+    /* Every ten seconds: temperature on the UART without flooding it. */
+    if (next_thermal == 0 || now >= next_thermal) {
+        next_thermal = now + board_counter_hz() * 10;
+        board_thermal_report("idle");
+    }
+
+    /* Interrupts are masked and the GIC is not up, so WFI would not return
+     * on a timer. A short yield wait cuts continuous busy-polling without
+     * depending on an event that never arrives. */
+    until = board_counter() + board_counter_hz() / 1000;
+    while (board_counter() < until)
+        __asm__ volatile("yield" ::: "memory");
+}
 
 void board_stop(void) {
     __asm__ volatile("msr daifset, #0xf");
@@ -357,14 +502,19 @@ static void header_uart_bringup(void) {
     u32 cr = 0, v;
     int stale = 0, answered;
 
+    diag_failing("header_uart_probe");
+    diag_set(DIAG_UART_GPIO, DIAG_DETECTING, "RP1 UART0");
     con_puts("header uart (pins 8 and 10): asking RP1 ... ");
     answered = probe_read32(header_uart.base + UART_CR, &cr, &stale);
     if (stale) con_puts("(an SError was already waiting; discarded) ");
     if (!answered || cr == 0xffffffffu) {
         con_puts("no answer. Not used.\n"
                  "  (needs enable_rp1_uart=1 in config.txt and a bootloader that knows it)\n");
+        diag_set(DIAG_UART_GPIO, DIAG_FAIL, "RP1 UART0 no answer");
+        diag_set(DIAG_RP1, DIAG_FAIL, "UART window silent");
         return;
     }
+    diag_set(DIAG_RP1, DIAG_OK, "MMIO window answers");
     if (cr & 1) {
         con_puts("set up by the firmware.\n");
     } else {
@@ -403,6 +553,8 @@ static void header_uart_bringup(void) {
     show_reg("  pin14 ", MMIO32(RP1_GPIO_CTRL(14)));
     show_reg("  pin15 ", MMIO32(RP1_GPIO_CTRL(15)));
     con_puts("\n");
+    diag_set(DIAG_UART_GPIO, DIAG_OK, "115200 8N1 pins 8/10");
+    diag_stage("gpio_uart");
 }
 
 /* ---- RP1 GPIO output --------------------------------------------------- */
@@ -528,11 +680,19 @@ static void board_fan_start(void) {
     u32 ctrl, div, rpm0, rpm1, level, prev, edges, bit;
     u64 pwm_ctrl, pwm_pad, tach_ctrl, tach_pad, rio, until;
     int stale = 0;
+    char detail[40];
+    struct kbuf b;
 
+    diag_failing("fan_pwm_clk");
+    diag_set(DIAG_FAN_PWM, DIAG_INITIALIZING, "gpio45 pwm1 ch3");
+    diag_set(DIAG_FAN_RPM, DIAG_DETECTING, "gpio29 tach");
     con_puts("fan: pwm on gpio 45, tach on gpio 29\n");
     if (!probe_read32(CLK_PWM1_CTRL, &ctrl, &stale) ||
         !probe_read32(CLK_PWM1_DIV, &div, &stale)) {
         con_puts("  clk_pwm1: no answer\n");
+        diag_set(DIAG_FAN_PWM, DIAG_FAIL, "clk_pwm1 no answer");
+        diag_set(DIAG_FAN_RPM, DIAG_UNKNOWN, "pwm failed");
+        diag_failing("fan_pwm_clk");
         return;
     }
     show_reg("  clk_pwm1 ctrl", ctrl);
@@ -552,6 +712,9 @@ static void board_fan_start(void) {
     if (!rp1_pin_where(FAN_PWM_PIN, &pwm_ctrl, &pwm_pad, &rio, &bit) ||
         !rp1_pin_where(FAN_TACH_PIN, &tach_ctrl, &tach_pad, &rio, &bit)) {
         con_puts("  fan pins are not on this gpio map\n");
+        diag_set(DIAG_FAN_PWM, DIAG_FAIL, "pin map");
+        diag_set(DIAG_FAN_RPM, DIAG_FAIL, "pin map");
+        diag_failing("fan_pin_map");
         return;
     }
 
@@ -598,6 +761,21 @@ static void board_fan_start(void) {
     con_puts("\n  tach edges in 500 ms: ");
     con_dec(edges);
     con_putc('\n');
+
+    /* 2 pulses/rev typical; edges in 0.5 s → RPM = edges * 60. */
+    kbuf_init(&b, detail, sizeof detail);
+    kbuf_dec(&b, (u64)edges * 60u);
+    kbuf_put(&b, " est; reg ");
+    kbuf_hex(&b, rpm1);
+    if (edges == 0 && rpm0 == rpm1)
+        diag_set(DIAG_FAN_RPM, DIAG_FAIL, detail);
+    else
+        diag_set(DIAG_FAN_RPM, DIAG_OK, detail);
+    diag_set(DIAG_FAN_PWM, DIAG_OK, "max commissioning duty");
+    diag_stage("fan");
+
+    /* Temperature after the fan is commanded, before the application layer. */
+    board_thermal_report("after fan");
 }
 
 /* ---- Ethernet: RP1's Cadence GEM ------------------------------------- */
@@ -817,12 +995,15 @@ void board_eth_report(void) {
     u32 mid = 0, ncr = 0, ncfgr = 0, nsr = 0;
     int stale = 0, bmsr, b, gigabit = 0, fast = 0;
 
+    diag_failing("ethernet_gem");
+    diag_set(DIAG_ETHERNET, DIAG_DETECTING, "RP1 GEM");
     con_puts("ethernet: RP1 GEM at ");
     con_hex(ETH_BASE);
     con_puts(": ");
     if (!probe_read32(ETH_BASE + ETH_MID, &mid, &stale) ||
         mid == 0 || mid == 0xffffffffu) {
         con_puts("no answer.\n");
+        diag_set(DIAG_ETHERNET, DIAG_FAIL, "GEM no answer");
         return;
     }
     if (!probe_read32(ETH_BASE + ETH_NCR, &ncr, &stale) ||
@@ -966,6 +1147,11 @@ void board_eth_report(void) {
     show_reg("  isr", MMIO32(ETH_BASE + ETH_ISR));
     con_putc('\n');
     if (!eth_rx_scan()) con_puts("  rx: no frame yet\n");
+    if (nsr & NSR_LINK)
+        diag_set(DIAG_ETHERNET, DIAG_OK, "GEM up, link bit set");
+    else
+        diag_set(DIAG_ETHERNET, DIAG_OK, "GEM up, link down");
+    diag_stage("ethernet");
 }
 
 void board_eth_poll(void) {
@@ -974,17 +1160,91 @@ void board_eth_poll(void) {
 
 void kyrios_main(void);
 
+/* Explicit stubs: name the missing drivers so the panel never looks done. */
+static void board_probe_pcie_nvme_usb(void) {
+    u32 mid = 0;
+    int stale = 0;
+
+    diag_failing("pcie_rp1_window");
+    diag_set(DIAG_PCIE, DIAG_DETECTING, "RP1 via PCIe inbound");
+    /* Reachability of the RP1 peripheral window is the only PCIe evidence
+     * available without a host-bridge enumerator. */
+    if (probe_read32(0x1f00030000UL + 0x30, &mid, &stale) && mid != 0xffffffffu) {
+        diag_set(DIAG_PCIE, DIAG_OK, "RP1 window maps; enum ABSENT");
+    } else {
+        diag_set(DIAG_PCIE, DIAG_FAIL, "RP1 window silent");
+    }
+    diag_stage("pcie_probe");
+
+    diag_failing("nvme_driver");
+    diag_set(DIAG_NVME, DIAG_ABSENT, "no NVMe driver yet");
+    diag_stage("nvme_stub");
+
+    diag_failing("usb_driver");
+    diag_set(DIAG_USB, DIAG_ABSENT, "no USB driver yet");
+    diag_stage("usb_stub");
+}
+
+/* Called by kyrios_main() when the commissioning phase is done.
+ * Releases the HDMI surface from the diag panel and re-enables scrolling
+ * terminal output on it.  After this call every con_putc goes to both
+ * UARTs and to the framebuffer, so the HDMI monitor shows the same
+ * interactive session as the serial terminal. */
+void board_hdmi_terminal(void) {
+    if (!fb.up) return;
+    diag_hdmi_ready(0);     /* diag_refresh() will no longer touch HDMI */
+    panel_mode = 0;
+    fb_clear();
+}
+
+static void board_store_status(void) {
+    u64 length = 0;
+    u8 *mem = board_memory(&length);
+    char detail[40];
+    struct kbuf b;
+
+    diag_failing("document_store");
+    diag_set(DIAG_STORE, DIAG_DETECTING, "RAM layout");
+    if (!mem || length < 25 * 0x100000UL) {
+        diag_set(DIAG_STORE, DIAG_FAIL, "memory too small");
+        diag_failing("board_memory");
+        return;
+    }
+    kbuf_init(&b, detail, sizeof detail);
+    kbuf_put(&b, "RAM only ");
+    kbuf_hex(&b, length);
+    kbuf_put(&b, " @ ");
+    kbuf_hex(&b, (u64)mem);
+    diag_set(DIAG_STORE, DIAG_OK, detail);
+    diag_note("[diag] persistent storage: ABSENT (no disk driver; store is RAM)\n");
+    diag_stage("store_ram");
+}
+
 void kernel_main(u64 dtb) {
     u64 el;
+    char detail[40];
+    struct kbuf b;
+
+    diag_init();
+    diag_failing("debug_uart_setup");
 
     uart_setup(&debug_uart, 5, 0);              /* 9216000 / (16 x 115200) = 5 */
     debug_uart.up = 1;
+    diag_set(DIAG_UART_DEBUG, DIAG_OK, "PL011 115200 debug connector");
+    diag_stage("debug_uart");
 
     __asm__ volatile("mrs %0, CurrentEL" : "=r"(el));
+    kbuf_init(&b, detail, sizeof detail);
+    kbuf_put(&b, "BCM2712 EL");
+    kbuf_dec(&b, el >> 2);
+    diag_set(DIAG_PROCESSOR, DIAG_OK, detail);
+    diag_set(DIAG_EXEC, DIAG_INITIALIZING, "commissioning");
+
     con_puts("\nkyrios v0.0.0 kernel on lirvol (BCM2712), EL");
     con_dec(el >> 2);
     con_puts("\ndebug uart: up\n");
 
+    diag_failing("framebuffer_setup");
     con_puts("framebuffer: asking the firmware ... ");
     if (fb_setup()) {
         replay(2);
@@ -992,8 +1252,15 @@ void kernel_main(u64 dtb) {
         con_puts(", "); con_dec(fb.depth); con_puts(" bits, at ");
         con_hex((u64)fb.base);
         con_puts("\n");
+        panel_mode = 1;
+        diag_hdmi_ready(1);
+        diag_refresh();
+        diag_stage("hdmi_console");
     } else {
         con_puts("none.\n");
+        diag_hdmi_ready(0);
+        diag_note("[diag] HDMI: FAIL (no framebuffer); UART backends continue\n");
+        diag_failing("framebuffer_setup");
     }
     if (firmware_revision) {
         con_puts("firmware revision: ");
@@ -1003,29 +1270,43 @@ void kernel_main(u64 dtb) {
 
     header_uart_bringup();
 
+    diag_failing("memory_map");
+    diag_set(DIAG_MEMORY, DIAG_DETECTING, "KMEM");
+    kbuf_init(&b, detail, sizeof detail);
+    kbuf_hex(&b, KMEM_BASE);
+    kbuf_put(&b, "+");
+    kbuf_hex(&b, KMEM_LENGTH);
+    if (dtb + 0x100000 > KMEM_BASE && dtb < KMEM_BASE + KMEM_LENGTH) {
+        con_puts("WARNING: the device tree lies inside kyrios memory.\n");
+        diag_set(DIAG_MEMORY, DIAG_FAIL, "DTB overlap");
+        diag_failing("memory_dtb_overlap");
+    } else if (fb.up && (u64)fb.base + (u64)fb.pitch * fb.height > KMEM_BASE &&
+               (u64)fb.base < KMEM_BASE + KMEM_LENGTH) {
+        con_puts("WARNING: the framebuffer lies inside kyrios memory.\n");
+        diag_set(DIAG_MEMORY, DIAG_FAIL, "FB overlap");
+        diag_failing("memory_fb_overlap");
+    } else {
+        diag_set(DIAG_MEMORY, DIAG_OK, detail);
+        diag_stage("memory");
+    }
+
     con_puts("device tree at ");
     con_hex(dtb);
     con_puts(", counter ");
     con_dec(board_counter_hz());
     con_puts(" per second\n");
 
-    /* The memory range below was chosen without knowing where the firmware
-     * puts its own things on this board. Say so if they meet. */
-    if (dtb + 0x100000 > KMEM_BASE && dtb < KMEM_BASE + KMEM_LENGTH)
-        con_puts("WARNING: the device tree lies inside kyrios memory.\n");
-    if (fb.up && (u64)fb.base + (u64)fb.pitch * fb.height > KMEM_BASE &&
-        (u64)fb.base < KMEM_BASE + KMEM_LENGTH)
-        con_puts("WARNING: the framebuffer lies inside kyrios memory.\n");
-
-    /* The fan before anything else. The idle loop does not wait, so the
-     * core runs continuously, and nothing else on this board turns the
-     * header fan. */
+    /* Fan and thermal before the application layer. */
     board_fan_start();
 
-    /* Development: report the Ethernet port at every boot, unasked, so
-     * a board with a cable in it says whether the port is live on the
-     * same screen as the rest of the boot text. */
+    board_probe_pcie_nvme_usb();
     board_eth_report();
+    board_store_status();
+
+    diag_set(DIAG_ONYCHOS, DIAG_DEFERRED, "not required for console");
+    diag_set(DIAG_EXEC, DIAG_OK, "entering kyrios_main");
+    diag_stage("commission_console_ready");
+    diag_failing("(none)");
 
     kyrios_main();
     board_stop();

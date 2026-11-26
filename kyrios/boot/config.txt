@@ -1,7 +1,11 @@
 # kyrios v0.0.0 on lirvol (development build) (Raspberry Pi 5, BCM2712).
 # The bootloader in the board's EEPROM reads this file, loads the image
 # named here at 0x80000 and starts it. No Linux is involved.
+#
+# Commissioning merge 2026-11-24: preserve diagnostic UART, do not enable
+# SWD pin mux, do not auto-update EEPROM. kernel= and load address kept.
 
+[pi5]
 arm_64bit=1
 kernel=kyrios-v0.0.0.img
 kernel_address=0x80000
@@ -9,11 +13,18 @@ kernel_address=0x80000
 # The image is not Linux. Skip the check that looks for a compatible one.
 os_check=0
 
-# Serial on the 40-pin header (pin 8 transmit, pin 10 receive, pin 6
-# ground): the firmware sets RP1 UART0 to 115200 and leaves RP1 and its
-# PCIe link running when it starts the image.
+# Diagnostic UART: early firmware console + RP1 header UART left running.
+enable_uart=1
+uart_2ndstage=1
 enable_rp1_uart=1
 pciex4_reset=0
+
+# Boot artifact hashes. SWD off so UART pins stay for diagnostics.
+sha256=1
+enable_jtag_gpio=0
+
+# Do not rewrite board EEPROM from this card.
+bootloader_update=0
 
 # HDMI: a 32-bit framebuffer from the firmware.
 disable_overscan=1

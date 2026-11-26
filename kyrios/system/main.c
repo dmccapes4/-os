@@ -1,5 +1,6 @@
 /* main.c: power-on. */
 #include "kyrios.h"
+#include "../kernel/diag.h"
 
 static int self_check(void) {
     static const u8 abc[32] = {
@@ -53,17 +54,26 @@ int kyrios_init(void) {
     int i;
 
     con_puts("\nkyrios v0.0.0\n");
-    if (!self_check()) return 0;
+    diag_failing("self_check");
+    if (!self_check()) {
+        diag_set(DIAG_EXEC, DIAG_FAIL, "self-check");
+        return 0;
+    }
     con_puts("self-check: SHA-256 and the walk are right\n");
+    diag_stage("self_check");
 
     memory = board_memory(&length);
     if (length < 25 * 0x100000UL) {
         con_puts("not enough memory for the layout\n");
+        diag_set(DIAG_STORE, DIAG_FAIL, "memory too small");
+        diag_failing("store_init");
         return 0;
     }
     kstate = KS_WAITING;
     decay_init();
     store_init(memory, length);
+    diag_set(DIAG_STORE, DIAG_OK, "spaces+record in RAM");
+    diag_stage("store_init");
 
     /* The ports are assigned. Each assignment is traced. */
     for (i = 1; i < K_SPACES; i++) {
@@ -104,6 +114,7 @@ int kyrios_init(void) {
 }
 
 void kyrios_main(void) {
+    board_hdmi_terminal();      /* commissioning panel done; HDMI becomes the terminal */
     if (!kyrios_init()) {
         con_puts("kyrios did not start.\n");
         return;

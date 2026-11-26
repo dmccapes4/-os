@@ -12,7 +12,7 @@ B       := _build
 PYTHON  ?= $(if $(wildcard ../.venv/bin/python),../.venv/bin/python,python3)
 IMAGE   := $(B)/kyrios-v$(VERSION).img
 
-KERNEL_C := kernel/lib.c kernel/sha256.c kernel/walk.c kernel/bcm2712.c
+KERNEL_C := kernel/lib.c kernel/sha256.c kernel/walk.c kernel/diag.c kernel/bcm2712.c
 KERNEL_S := kernel/start.S kernel/vectors.S
 SYSTEM_C := system/store.c system/record.c system/decay.c system/interact.c system/main.c
 HEADERS  := $(wildcard kernel/*.h system/*.h host/*.h)
@@ -26,7 +26,7 @@ CFLAGS := -ffreestanding -nostdlib -nostartfiles -fno-stack-protector -fno-pic \
 OBJS := $(patsubst %.c,$(B)/arm64/%.o,$(KERNEL_C) $(SYSTEM_C)) \
         $(patsubst %.S,$(B)/arm64/%.o,$(KERNEL_S))
 
-HOST_C := kernel/lib.c kernel/sha256.c kernel/walk.c $(SYSTEM_C) host/host_board.c host/test_kyrios.c
+HOST_C := kernel/lib.c kernel/sha256.c kernel/walk.c kernel/diag.c $(SYSTEM_C) host/host_board.c host/test_kyrios.c
 HOST_CFLAGS := -DKYRIOS_HOST -O1 -g -Wall -Wextra -std=gnu11 -fsanitize=address,undefined -fno-omit-frame-pointer
 
 all: $(IMAGE)
