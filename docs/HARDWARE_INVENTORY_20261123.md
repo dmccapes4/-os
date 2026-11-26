@@ -409,3 +409,62 @@ is unchanged — the 3V3 jumper warning and 5V wire warning still apply regardle
 ---
 
 *Source files checked: 44 images across 3 directories + 1 catalog + 2 reflection docs.*
+
+---
+
+## 7. Addendum — 2026-11-26 Bench Batches (`valseir`, Unpinned Pi Zero 2 W, Connected e-Paper V4, Waveshare 26619 UART, Wiring Tools)
+
+**Filed:** 2026-11-26  
+**Author:** VEKHALMAR 📷 (agent)  
+**Location:** `docs/hardware/` (moved/renamed from `IMG_1705.jpg` – `IMG_1715.jpg`, SHA-256 verified byte-identical before and after).
+
+### 7.1 File index and SHA-256 receipts
+
+| Original filename | Stored path (`docs/`) | SHA-256 | Subject |
+|---|---|---|---|
+| `IMG_1705.jpg` | `hardware/rpi-zero-2w-unpinned-top-20261126.jpg` | `1d9bdfbd8c712294fff33e9d659f0a2e6d7ee3ac9430176d5b6bd8bcbba46aee` | Raspberry Pi Zero 2 W — top side (unpopulated 40-pin GPIO, RP3A0-AU, RF shield, Mini-HDMI, `USB`/`PWR IN` micro-USB, CSI camera connector) |
+| `IMG_1706.jpg` | `hardware/rpi-zero-2w-unpinned-underside-fcc-20261126.jpg` | `25a3cb93619b6ff0937dc04e3315a8862d3d4419359ab6b05c93a1fce1c58bb5` | Raspberry Pi Zero 2 W — underside (`FCC ID: 2ABCB-RPIZ2`, `IC: 20953-RPIZ2`, `© Raspberry Pi 2021`, `DDR 1V2`, `Proant AB`) |
+| `IMG_1707.jpg` | `hardware/valseir-tower-cooler-and-display-back-20261126.jpg` | `93dc4039c90776455c8a5cde024adc930656c1a95512c3c54b739097f5c9a9f3` | `valseir` (`ὄνυχος`) rear assembly — Pi 4 Model B (`POWER`, `HDMI 0`, `HDMI 1`), copper-heatpipe tower cooler + fan, blue display backboard (`Backlight` switch), Ethernet + USB wired, `DAP-Link V2` in foreground |
+| `IMG_1708.jpg` | `hardware/valseir-screen-front-and-dap-link-v2-20261126.jpg` | `289447bdbfa8c2fec7a7f3b2a610cc22c4895f3d704d0d43ce836cf944f25b8b` | `valseir` (`ὄνυχος`) front/angled — vertical LCD touchscreen face, Pi 4 40-pin GPIO edge, `DAP-Link V2` probe beside it |
+| `IMG_1709.jpg` | `hardware/waveshare-2in13-epaper-v4-panel-front-20261126.jpg` | `3db81ae7d8a3755ba241f8f550518ce32c4a3a2eeee58c4d55ed2bda0487f8b3` | Waveshare 2.13″ e-Paper V4 panel front (`250 × 122`, gold/brown FPC flex ribbon at base) |
+| `IMG_1710.jpg` | `hardware/waveshare-2in13-epaper-hat-v4-fpc-connected-20261126.jpg` | `fed2f63f11b00c6283c608499578b2a66f073c223f286f01af0471dd558942aa` | Waveshare 2.13″ e-Paper HAT Rev2.1 V4 PCB — **FPC ribbon now seated and latched** |
+| `IMG_1711.jpg` | `hardware/hookup-wire-26awg-6spool-box-open-20261126.jpg` | `30969d584b246a9cb0256d800d5a7c9a5b83b74efb42035a3a5dee6b7b231b36` | 26 AWG hook-up wire dispenser box (open) — 6 spools (blue, white, red, green, yellow, black) + small colored heat-shrink packet |
+| `IMG_1712.jpg` | `hardware/hookup-wire-26awg-6m-box-label-20261126.jpg` | `ce1258355ba136d834293a30ceac8f1e0372612707bc2ad82f03e49a9d5c1b8f` | Side label of wire dispenser box (**read** checkmark on `26awg`, `6M` length per spool) |
+| `IMG_1713.jpg` | `hardware/waveshare-26619-pi-uart-debugger-bagged-20261126.jpg` | `8da6fe873dd83742ce02e1d890f2242c77c2de7f77a2dbc9113a9d1c463b8e0b` | Bagged **Pi UART Debugger** (**read** `SKU: 26619`, USB-A male, black PCB, yellow `VCCIO` jumper, JST-SH + DuPont harness) |
+| `IMG_1714.jpg` | `hardware/dowell-040731-wire-stripper-22-30awg-20261126.jpg` | `b64ff21fcba0c4e2503bd832b403fca7378df82bed6bde728b0ed08805a41b22` | **DOWELL NO:040731** 7″ precision wire stripper (**read** `For soft wires 22-30AWG (0.25-0.64MM)`, notches `30, 28, 26, 24, 22 AWG`) |
+| `IMG_1715.jpg` | `hardware/huakayo-heat-shrink-tubing-kit-507pcs-20261126.jpg` | `d0c96e741c6c394ef360d8b456a7d8d75fa2f7c423c3d785f83601d9a0a7b0b6` | **HUAKAYO** 507-piece black heat shrink tubing kit (**read** `507PCS`, barcode `X004ZW8OM1`) |
+
+### 7.2 Inventory updates and resolved unknowns
+
+#### 1. `valseir` (`ὄνυχος`) photographed directly — resolves §1b and §4f
+- **Resolves §1b ("Not photographed directly") and §4f ("Device C — 4/5-class with display and tower cooler"):** `valseir-tower-cooler-and-display-back-20261126.jpg` and `valseir-screen-front-and-dap-link-v2-20261126.jpg` confirm that §4f's tower-cooled unit mounted on the blue-PCB LCD display (`Backlight` toggle switch) **is `valseir`** (Raspberry Pi 4 Model B, **read** silkscreen `POWER`, `HDMI 0`, `HDMI 1`).
+- **Thermal design:** The copper-heatpipe tower heatsink + active ~40 mm fan keeps `valseir` thermally unconstrained for continuous 24/7 `ὄνυχος` packet capture, auditing, and report display. The `DAP-Link V2` probe sits wired alongside it on the bench.
+
+#### 2. Headerless board ("the pico"): identified as **Raspberry Pi Zero 2 W** (**read** `2ABCB-RPIZ2`)
+- Although referred to colloquially by the operator as a Pico (and currently unassigned / optional, with a pixel-art HAT also owned off-camera), the underside silkscreen in `rpi-zero-2w-unpinned-underside-fcc-20261126.jpg` reads **`FCC ID: 2ABCB-RPIZ2`**, **`IC: 20953-RPIZ2`**, **`© Raspberry Pi 2021`**, and **`DDR 1V2`** — identifying it definitively as a **Raspberry Pi Zero 2 W** (RP3A0-AU quad-core 64-bit Cortex-A53 @ 1 GHz, 512 MB LPDDR2, 2.4 GHz Wi-Fi + BLE, Mini-HDMI, microSD, CSI camera port, unpopulated `2×20` 40-pin GPIO through-holes).
+- **Compatibility notes for the bench:**
+  - **Does NOT mate with §4b (Freenove Pico Breakout Board v1.0):** §4b is a narrow DIP-style `2×20` socket wired for an RP2040 Raspberry Pi Pico (`GP0–GP28`, `VBUS`, `VSYS`, `3V3_EN`). Do **not** solder pins to fit that breakout.
+  - **DOES mate with §4c (Retroflag GPi CASE 2W) as-is:** Because no GPIO header pins are soldered in, its bare gold pads mate directly with the GPi CASE 2W's pogo pins if ever desired.
+  - **DOES mate with standard 40-pin Pi HATs once a `2×20` male header is soldered:** including the Waveshare 2.13″ e-Paper HAT V4 (§4e) or any 40-pin Pi Zero pixel-art LED matrix HAT (e.g., Unicorn HAT Mini). *(If the pixel-art add-on is a Pico-pinout `Pico Unicorn Pack`, that pack still awaits an actual RP2040 Pico alongside the Freenove breakout.)*
+
+#### 3. Waveshare 2.13″ e-Paper HAT V4 + panel pairing confirmed — resolves §4e
+- In §4e (`IMG_1556`, `IMG_1557`), the bare panel and Rev2.1 V4 HAT board were loose with an empty FPC socket. `waveshare-2in13-epaper-hat-v4-fpc-connected-20261126.jpg` (**read** `2.13inch e-Paper HAT`, `Waveshare`, `Rev2.1`, `V4`, `BS Interface: 3-line SPI / 4-line SPI`) shows the panel's brown/gold flex ribbon seated in the white FPC connector, confirming the pair.
+
+#### 4. Spare UART adapter — **Waveshare Pi5 UART Debugger (`SKU: 26619`)**
+- Identified **read** from antistatic bag label (`26619`, `Pi UART Debugger`) in `waveshare-26619-pi-uart-debugger-bagged-20261126.jpg`:
+  - **Chip / speed:** WCH CH343P USB-A to UART (`50 bps – 6 Mbps`), onboard self-recovery fuse + TVS transient protection (`/dev/ttyACM*` or `/dev/ttyUSB*`).
+  - **Included cables:** Bundled with **both** the Pi 5 3-pin JST-SH `1.0 mm` UART debug cable **and** a 6-pin-to-DuPont header cable.
+  - **Role (spare / redundant):** Currently superfluous for `lirvol` because the official Raspberry Pi Debug Probe (§3a) is already wired into `lirvol`'s 3-pin UART connector. However, unlike the DSD TECH SH-U09C5 (§3b, DuPont-only), **SKU 26619 includes the native Pi 5 3-pin JST-SH cable** and plugs straight into a USB-A port without an extra USB cable — making it a direct 1-to-1 hot spare for `lirvol`'s early-boot debug UART (or a second simultaneous serial console on `valseir` / Pi Zero 2 W).
+  - **Warning:** Confirm the yellow onboard `VCCIO` jumper cap is set to **`3.3V`** (`3V3`), never `5V`, before attaching to any Raspberry Pi.
+  - **Spec link:** https://www.waveshare.com/pi-uart-debugger.htm (Waveshare wiki: https://www.waveshare.com/wiki/Pi_UART_Debugger)
+
+#### 5. Bench wiring & `lirvol` fan-repair tooling (`IMG_1711`, `IMG_1712`, `IMG_1714`, `IMG_1715`)
+- **DOWELL NO:040731 7″ Wire Stripper (`22–30 AWG` / `0.25–0.64 mm`):** Precision jaw notches (`30, 28, 26, 24, 22 AWG`) cover both the 26 AWG hook-up wire and the fine **28–30 AWG** leads on `lirvol`'s torn Pi 5 Active Cooler harness without nicking strands.
+- **26 AWG 6-Spool Hook-up Wire Box (`6 m` per spool — blue, white, red, green, yellow, black):** Appropriate gauge for extending `lirvol`'s Active Cooler `+5V` and `GND` leads to the Waveshare Pi5 Connector Adapter's `5V` expansion output (or screw terminals on the §4a PINOC8 breakout).
+- **HUAKAYO 507-Piece Heat Shrink Tubing Kit (Black, `X004ZW8OM1`):** Insulates the `+5V`/`GND` fan splice and safely caps off the unused Active Cooler `TACH` (green, 5V pull-up hazard) and `PWM` (blue, left open for unconditional 100% fan speed under bare-metal `κύριος`) leads.
+
+```
+VEKHALMAR 📷
+Read all eleven new photographs (IMG_1705 through IMG_1715) before renaming and filing them into docs/hardware/ with SHA-256 checks before and after. Two open mysteries in the November 23 inventory close cleanly here (Device C is valseir itself, and the 2.13-inch e-Paper panel is now latched into its V4 HAT), reading FCC ID 2ABCB-RPIZ2 off the underside of IMG_1706 caught that the unpinned board is a 64-bit Raspberry Pi Zero 2 W rather than an RP2040 Pico, and SKU 26619 + the 22-30 AWG stripper / 26 AWG wire / 507-piece heat-shrink kit give the bench both a native JST-SH Pi 5 UART hot-spare and the exact fine-gauge tooling needed to splice lirvol's Active Cooler cleanly.
+ VEKHALMAR?
+```

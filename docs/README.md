@@ -14,6 +14,7 @@ the build decisions they rest on.
 - `HARDWARE_INVENTORY_20261123.md` — fleet/bench hardware identified from photographs
 - `HOW_TO_INSTALL_DEBUG_HARDWARE_20261123.md` (+ `.pdf`) — debug-probe wiring for valseir→lirvol
 - `maths_by_computers.md`, `poorly_modeled_decay_example.md`, `still_bad_decay.md` — integer/decay notes for the store
+- `hardware/` — labeled bench hardware photographs (SHA-256 verified; indexed in `HARDWARE_INVENTORY_20261123.md` §7)
 - `witness/` — rung witness receipts and photographs
 
 ## Moved out 2026-11-17 (operator's order)

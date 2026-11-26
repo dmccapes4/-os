@@ -44,8 +44,8 @@ The Pis are development hardware and are assumed to work as intended; this file 
 
 ## Open inventory questions (relevant to future software)
 
-- The Pico itself is not in hand (only its Freenove breakout board) — the hardware-watchdog role has no hardware yet.
-- The Waveshare 2.13″ e-Paper panel and its HAT are believed paired, unconfirmed — the zero-power status face depends on it.
+- **RP2040 Pico vs. Pi Zero 2 W (updated 2026-11-26):** An unpinned **Raspberry Pi Zero 2 W** (`FCC ID: 2ABCB-RPIZ2`, `docs/hardware/rpi-zero-2w-unpinned-underside-fcc-20261126.jpg`) is in hand with no assigned role yet. An actual **RP2040 Pico** (for the Freenove Pico breakout board and any Pico-pinout HAT) is still not photographed on the bench; the hardware-watchdog role remains unassigned/optional.
+- **Waveshare 2.13″ e-Paper V4 (confirmed 2026-11-26):** Pairing confirmed — the panel's FPC flex cable is seated in the Rev2.1 V4 HAT (`docs/hardware/waveshare-2in13-epaper-hat-v4-fpc-connected-20261126.jpg`).
 
 ---
 *Layout note: per-node configuration directories (`fleet/lirvol/`, `fleet/valseir/`) are created when first configuration exists, not before. State, receipts, and session history live in `docs/` and the ledger — not here.*
