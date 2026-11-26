@@ -22,6 +22,7 @@ visible in photograph) or **inferred** (form factor only).
 | HAT | 52Pi NVdigi EP-0220 (HiFiBerry Digi+ audio + NVMe) |
 | Adapter | Waveshare Pi5 Connector Adapter (HDMI breakout + UART passthrough) |
 | Debug UART | RPi Debug Probe cable already plugged in (confirmed from IMG_1647, IMG_1609) |
+| Fan header (`J17`) | **Damaged / non-repairable to spec (2026-11-26):** 4-pin JST-SH fan header (`J17`) torn from PCB; `5V`-only splice rejected by operator because losing `PWM` control and `TACH` monitoring introduces a hardware-level lie (unobservable, uncontrolled cooling). Board requires full-spec replacement or passive-rated thermal path rather than blind 2-wire power. |
 | OS target | κύριος v0.0.2 — confirmed booting (IMG_1630) |
 | FCC ID | 2ABCB-RPI5, KCC R-C-P2R-RPI5 (**read** from PCB underside, IMG_1646) |
 
@@ -458,10 +459,9 @@ is unchanged — the 3V3 jumper warning and 5V wire warning still apply regardle
   - **Warning:** Confirm the yellow onboard `VCCIO` jumper cap is set to **`3.3V`** (`3V3`), never `5V`, before attaching to any Raspberry Pi.
   - **Spec link:** https://www.waveshare.com/pi-uart-debugger.htm (Waveshare wiki: https://www.waveshare.com/wiki/Pi_UART_Debugger)
 
-#### 5. Bench wiring & `lirvol` fan-repair tooling (`IMG_1711`, `IMG_1712`, `IMG_1714`, `IMG_1715`)
-- **DOWELL NO:040731 7″ Wire Stripper (`22–30 AWG` / `0.25–0.64 mm`):** Precision jaw notches (`30, 28, 26, 24, 22 AWG`) cover both the 26 AWG hook-up wire and the fine **28–30 AWG** leads on `lirvol`'s torn Pi 5 Active Cooler harness without nicking strands.
-- **26 AWG 6-Spool Hook-up Wire Box (`6 m` per spool — blue, white, red, green, yellow, black):** Appropriate gauge for extending `lirvol`'s Active Cooler `+5V` and `GND` leads to the Waveshare Pi5 Connector Adapter's `5V` expansion output (or screw terminals on the §4a PINOC8 breakout).
-- **HUAKAYO 507-Piece Heat Shrink Tubing Kit (Black, `X004ZW8OM1`):** Insulates the `+5V`/`GND` fan splice and safely caps off the unused Active Cooler `TACH` (green, 5V pull-up hazard) and `PWM` (blue, left open for unconditional 100% fan speed under bare-metal `κύριος`) leads.
+#### 5. Bench wiring & `lirvol` `J17` fan-header post-mortem (`IMG_1711`, `IMG_1712`, `IMG_1714`, `IMG_1715`)
+- **DOWELL NO:040731 7″ Wire Stripper (`22–30 AWG` / `0.25–0.64 mm`), 26 AWG 6-Spool Hook-up Wire Box (`6 m`/spool), and HUAKAYO 507-Piece Heat Shrink Kit (`X004ZW8OM1`):** Added to general bench stock (available for the Freenove Pico breakout / e-Paper SPI harness and general prototyping).
+- **`lirvol` repair verdict (2026-11-26, operator confirmed):** `lirvol` cannot be repaired to full hardware integrity after `J17` tore off. Splicing the Active Cooler solely to `+5V` and `GND` leaves both `PWM` (closed-loop speed authority) and `TACH` (rotor RPM telemetry) dead — introducing a **hardware-level lie** where neither firmware, `κύριος`, nor `ὄνυχος` can observe fan stall or govern cooling. For production `κύριος` authority, the Pi 5 board itself should be replaced so `J17`'s `PWM` + `TACH` loop is genuine rather than assumed.
 
 ```
 VEKHALMAR 📷

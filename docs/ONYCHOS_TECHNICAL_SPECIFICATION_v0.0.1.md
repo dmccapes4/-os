@@ -4,12 +4,12 @@
 _cur.os::onyx•ox)
 ```
 
-**Filed:** 2026-11-17. **Revised:** 2026-11-18.
-**Author:** THIRMESHSENN 🕸️ (agent)
+**Filed:** 2026-11-17. **Revised:** 2026-11-26 (previously 2026-11-18).
+**Authors:** THIRMESHSENN 🕸️ (2026-11-17/18); SEIRTHIRFAL 🔬 (2026-11-26 revision).
 **Status:** draft. κύριος is built first; what ὄνυχος needs will be understood from that (R:39). Sections that depend on κύριος say so.
 **Scope:** ὄνυχος. κύριος is in `KYRIOS_TECHNICAL_SPECIFICATION_v0.0.1.md`, and its terms (trace, record, receipt, policy, halt) are used here as defined there.
 
-Basis marks are the same as in the κύριος specification: `R:n` is line `n` of `docs/kyrios_tech_spec_v001_review.md`; `M` is the operator's messages of 2026-11-17, 21:36 to 21:45; `N` is the operator's messages of 2026-11-18, 00:23 to 03:47; `P` is proposed here and not decided.
+Basis marks are the same as in the κύριος specification: `R:n` is line `n` of `docs/kyrios_tech_spec_v001_review.md`; `M` is the operator's messages of 2026-11-17, 21:36 to 21:45; `N` is the operator's messages of 2026-11-18, 00:23 to 03:47; `O` is the operator's messages of 2026-11-26; `P` is proposed here and not decided.
 
 ---
 
@@ -152,9 +152,13 @@ Both examples depend on what is already held: "new" says nothing held matches, a
 
 Coupling (N): where a space on κύριος is coupled with several spaces, ὄνυχος determines the connascence, through the types and edges κύριος keeps. κύριος and the operators update the edges with the scored connascence at every audit, and may bump scores live by policy in between. If the scores drift, ὄνυχος catches it. Between audits κύριος runs on its own clock and scores, and it updates with the audit.
 
-Commits (N): if ὄνυχος sees a commit that returns a problem vector, that goes in its report. What the problem vectors are and where they are defined is undecided (§8).
+Frames, open asterisks, and assumption-collapse drift (O; schema `P`, see κύριος §6.9):
+- **Frame validity audit:** ὄνυχος checks every quantitative measure or offloaded-job summary against the four-point frame gate (`n >= 1` finite, homogeneous `unit` preventing cross-category `satan-sums`, resolvable `window`/`population`, and declared `method`). Any claim missing a valid bounded frame is noted in the report as `unframed`.
+- **Non-collapse and methodology orthogonality:** Across κύριος's `graph retrieval` edges, ὄνυχος tracks upstream open `asterisks` (undischarged statistical priors, noise-mitigation assumptions, hardware hypotheses). It verifies that no downstream document silently drops upstream asterisks (`collapse_drift = n_open - kept_asterisks`, bounded by the finite upstream open-asterisk count `n_open`) or marks an asterisk `discharged` using the same `method` that introduced it (`lucifer-chains`). Heavy prose/claim extraction may be offloaded by `valseir` to external compute hardware while `valseir` records the resulting audit receipt (O).
 
-What is compared, and against what, waits on κύριος.
+Commits (N): if ὄνυχος sees a commit that returns a problem vector — including `unframed` measures or `collapse_drift >= 1` across `chain_depth` hops (P) — that goes in its report. What the full set of problem vectors is and where they are defined remains open (§8).
+
+What else is compared, and against what, waits on κύριος.
 
 ### 5.4 Report
 
@@ -205,7 +209,8 @@ Line shapes (P):
 {"schema": "onyx-reports-v0.0.1", "fields": {"report": "label of the report this line belongs to", "noted": "…"}, "update": {"what": "schema", "fields": "…"}}
 {"report": "0001", "source": "network", "noted": "a new http request made to non-local IP address three hops...", "problem": "<only if there is one>"}
 {"report": "0001", "source": "record", "noted": "new whatever.py build fixed recurring crash by updating module semver from x.x.x to x.x.y", "seen": {"from": "1a2", "to": "1f0"}}
-{"report": "0001", "closed": "<time>", "evict": ["<doc ids suggested for eviction>"], "scores": "<scored connascence for κύριος's edges, §5.3>"}
+{"report": "0001", "source": "record", "noted": "doc:0058 states unconditional benchmark gain while dropping 2 of 3 open upstream asterisks from doc:0042 without orthogonal method", "problem": {"kind": "collapse_drift", "dropped": 2, "n_open": 3, "chain_depth": 2, "missing_orthogonal_to": "doc:0042"}}
+{"report": "0001", "closed": "2026-11-26T18:30:00Z", "evict": ["<doc ids suggested for eviction>"], "scores": "<scored connascence and drift updates for κύριος's edges, §5.3>"}
 ```
 
 | Field | Meaning |
@@ -263,8 +268,8 @@ An earlier mention, for the record: retention memory bound and operator chosen, 
 | 8 | The procedure for evicting κύριος's traces (§5.5). |
 | 9 | The policy for intervening without the operator. |
 | 10 | How what ὄνυχος holds is matched to what is being authored, and how it is supplied (§6.2). |
-| 11 | The problem vectors: what they are and where they are defined (§5.3). |
-| 12 | How connascence between spaces is scored, and the form in which the scores reach κύριος's authors (§5.3). |
+| 11 | The full catalog of problem vectors beyond `unframed` measures and `collapse_drift`, and where they are defined (§5.3). |
+| 12 | How connascence between spaces is scored, how `collapse_drift × chain_depth` weights into edge scores, and the form in which scores reach κύριος's authors (§5.3). |
 
 ```
 THIRMESHSENN 🕸️
@@ -276,4 +281,11 @@ Kept to what the operator has said about ὄνυχος and the tools named for i
 THIRMESHSENN 🕸️
 Revised 2026-11-18 from the operator's messages of that night, marked N. The report shape I filed first was an index of the record with a line per trace. The reports are the receipts, so a line now has to stand without the trace it came from. The new shape is still a proposal.
  THIRMESHSENN?
+```
+
+```
+SEIRTHIRFAL 🔬
+Revised 2026-11-26 from the operator's directives marked O. Callsign roots: seir (SEE, nate:#34) + thir (EDGE/boundary, coined) + fal (ERR/miss, coined).
+Extended §5.3 and §6.1 so ὄνυχος audits bounded frame validity (frame_valid vs. unframed) and tracks open upstream asterisks across graph retrieval: reporting exact collapse_drift against finite n_open, chain_depth, and whether a claimed discharge actually used an orthogonal method rather than repeating the same statistical pipeline. Also noted external compute offload for heavy audit extraction without imposing artificial number-format restrictions on reports.jsonl.
+ SEIRTHIRFAL?
 ```

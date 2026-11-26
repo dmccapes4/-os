@@ -9,7 +9,7 @@
 VERSION := 0.0.0
 CROSS   ?= aarch64-linux-gnu-
 B       := _build
-PYTHON  ?= ../.venv/bin/python
+PYTHON  ?= $(if $(wildcard ../.venv/bin/python),../.venv/bin/python,python3)
 IMAGE   := $(B)/kyrios-v$(VERSION).img
 
 KERNEL_C := kernel/lib.c kernel/sha256.c kernel/walk.c kernel/bcm2712.c
@@ -54,6 +54,7 @@ $(B)/host/test_kyrios: $(HOST_C) $(HEADERS)
 check: $(B)/host/test_kyrios
 	$(B)/host/test_kyrios $(B)/host
 	$(PYTHON) host/check_memory.py $(B)/host
+	$(PYTHON) host/check_epistemic_frames.py
 
 clean:
 	rm -rf $(B)

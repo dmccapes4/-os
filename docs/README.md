@@ -8,8 +8,8 @@ the build decisions they rest on.
 - `EXPERIMENT_LADDER_KYRIOS_20261116.md` — behavioural oracle for the ladder
 - `BENCH_STATE_20261116.md`, `REPORT_READINESS_KYRIOS_20261116.md` — bench/toolchain receipts
 - `FIRST_BOOT_KYRIOS_20261116.md`, `FLEET_BASICS_20261116.md` — node receipts
-- `KYRIOS_TECHNICAL_SPECIFICATION_v0.0.1.md` — draft specification of κύριος (revised 2026-11-17 after the operator's review)
-- `ONYCHOS_TECHNICAL_SPECIFICATION_v0.0.1.md` — draft specification of ὄνυχος
+- `KYRIOS_TECHNICAL_SPECIFICATION_v0.0.1.md` — draft specification of κύριος (revised 2026-11-26)
+- `ONYCHOS_TECHNICAL_SPECIFICATION_v0.0.1.md` — draft specification of ὄνυχος (revised 2026-11-26)
 - `kyrios_tech_spec_v001_review.md` — the operator's review of the first κύριος draft
 - `HARDWARE_INVENTORY_20261123.md` — fleet/bench hardware identified from photographs
 - `HOW_TO_INSTALL_DEBUG_HARDWARE_20261123.md` (+ `.pdf`) — debug-probe wiring for valseir→lirvol

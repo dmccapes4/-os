@@ -368,3 +368,48 @@ THIRMESHSENN 🕸️
 Updated 2026-11-18. The build went ahead of the plan on Track K and showed where my reading was off: I had made κύριος the thing that scores, remembers and explains itself. By what the operator stated, κύριος holds current state and manages it, and the scoring and the remembering are on the other side of the cable.
  THIRMESHSENN?
 ```
+
+---
+
+## 12. Update, 2026-11-26
+
+**Author:** KETHHALLEV 🌱 (agent)  
+**Basis:** Operator directives of 2026-11-26 (`O` in the specifications).
+
+### 12.1 Retiring early-agent number-formatting and offload prohibitions
+
+| Stated by the operator (2026-11-26) | What it changes in this plan and the v0.0.1 bench harness |
+|---|---|
+| Hexadecimal in κύριος is for its primary organizing function — memory addresses, byte offsets/lengths, SHA-256 hashes, wire/packet framing (`SYN`/`ACK`), and fixed-width labels. There is **no prohibition** on normal number formatting. Timekeeping, policy durations, weights, and math packages use decimal, standard timestamps, or whatever numerical representation fits the task. | Retires the v0.0.1 `check_memory.py` rule that banned JSON numbers and forced durations/weights (`10` seconds, `100` weight) to be written `"a"` and `"64"`. Track D and `policy.jsonl` may use plain decimal integers, timestamps, and standard numerical types wherever natural; hex remains on addresses, hashes, wire headers, and `0001`-style labels. |
+| Heavy compute jobs may be handed off to other hardware on the network (GPU workstations, Mac Studio, etc.). | `lirvol` stays focused on organized document addressing, port authority, `rho` accounting, and trace integrity; heavy statistical, matrix, or LLM workloads execute on external fleet nodes and return outputs as ordinary documents carrying their `frame` and `asterisks` (below). |
+
+### 12.2 Honoring the asterisks: bounded frames and measurable assumption-collapse drift
+
+Premature collapse of conditional assumptions into unmarked "settled" premises propagates hidden error down derivation chains (`lucifer-chains@satan-sums`) and retards the search for better methodology. `_cur.os::onyx•ox)` builds this directly into Track D, κύριος (`§6.9`), and ὄνυχος (`§5.3`, `§6.1`):
+
+1. **Bounded frame before measure (`frame_valid`):**
+   - Every quantitative measure or claim-bearing edge states its bounded `frame` (`population`, finite count `n >= 1`, homogeneous `unit`, resolvable `window`, and `method` document/pipeline ID) *before* its `measure`.
+   - Any measure missing a bounded `n`, mixing incompatible units, or omitting its generating `method` is marked `unframed` — available for inspection, invalid for silent downstream summation.
+
+2. **First-class open conditions (`asterisks`) and orthogonal discharge:**
+   - Documents and edges carry an `asterisks` array listing undischarged assumptions, priors, noise-mitigation models, or hardware hypotheses (`status: "open" | "discharged"`).
+   - **Non-collapse law:** When Document $B$ derives from Document $A$, $B$ inherits $A$'s open `asterisks` unless discharged by a verification document $V$ whose `frame.method` is **independent/orthogonal** to $A$'s (`V.frame.method != A.frame.method`), or by an explicit traced operator `decide`. Re-running statistical conditioning inside the same methodology never auto-closes an asterisk; open asterisks stand as explicit methodology targets.
+
+3. **Measurable assumption-collapse drift (`collapse_drift` & `chain_depth`):**
+   - Within the bounded frame of Document $D$'s upstream `graph retrieval` dependency cone ($A_{\text{open}}$ distinct open upstream asterisks):
+     - `acknowledged`: count $A_{\text{kept}}$ of upstream open asterisks explicitly carried by $D$.
+     - `collapse_drift`: $A_{\text{dropped}} = A_{\text{open}} - A_{\text{kept}}$ (exact count of upstream open asterisks silently dropped while presenting $D$'s claim as unconditional).
+     - `chain_depth`: maximum path length of derivations stacked on an undischarged asterisk without orthogonal verification.
+   - **Additions to Track D (`D5` & `D6` pass lines):**
+     - `D5` (Edge & Frame Census): counts `frame_valid` vs. `unframed` claims and computes `(collapse_drift, A_open, chain_depth)` across multi-hop citation chains.
+     - `D6` (Agent Pointing): includes planted 3-hop assumption-collapse chains (where hop 1 states a methodological caveat, hop 2 softens it, and hop 3 states certainty); system agents + ὄνυχος must `point` the exact dropped asterisk and `chain_depth` citing byte spans at both ends.
+
+### 12.3 Bench hardware note (`lirvol` `J17` verdict, 2026-11-26)
+- `lirvol`'s torn 4-pin `J17` fan header **cannot be repaired to full hardware integrity**. The agent-suggested 2-wire (`+5V`/`GND`) splice was a waste of bench time and is rejected: without `PWM` control and `TACH` RPM telemetry, an always-powered fan is an unmonitored, uncontrollable **hardware-level lie** (if the rotor stalls or degrades, the system is blind). Logged in `docs/HARDWARE_INVENTORY_20261123.md` §1a and §7.5; a replacement Pi 5 board (with intact `J17` `PWM` + `TACH`) or verified passive heatsink enclosure is required so hardware state remains truthful.
+
+```
+KETHHALLEV 🌱
+Callsign roots: keth (PART/separate, coined) + hal (PLACE/frame, coined) + lev (GROW, nate-shifted:#26).
+Separated genuine addressing conventions (hex on pointers, hashes, and wire headers) from early agent-invented prohibitions ("64" for weight 100, "a" for 10 seconds, banning math/offload), and wired bounded frames + non-collapsing asterisks + measurable collapse_drift directly into Track D so methodology gaps stay visible instead of getting buried under downstream citations.
+ KETHHALLEV?
+```

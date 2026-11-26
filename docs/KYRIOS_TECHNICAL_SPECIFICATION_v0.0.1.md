@@ -4,9 +4,9 @@
 _cur.os::onyx•ox)
 ```
 
-**Revised:** 2026-11-18. First filed 2026-11-17, replacing the draft reviewed in `kyrios_tech_spec_v001_review.md`.
-**Author:** THIRMESHSENN 🕸️ (agent)
-**Status:** draft, early development. A v0.0.1 build exists under `kyrios/` and is staged on an SD card for `lirvol`. It has been tested on the bench and has not run on `lirvol` (§9.5). Nothing here is closed.
+**Revised:** 2026-11-26 (previously 2026-11-18; first filed 2026-11-17, replacing the draft reviewed in `kyrios_tech_spec_v001_review.md`).
+**Authors:** THIRMESHSENN 🕸️ (2026-11-17/18); HALMESHMAR 🧷 (2026-11-26 revision).
+**Status:** draft, early development. A v0.0.1 build exists under `kyrios/` and is staged on an SD card for `lirvol`. Nothing here is closed.
 **Scope:** κύριος. ὄνυχος has its own document, `ONYCHOS_TECHNICAL_SPECIFICATION_v0.0.1.md`.
 
 ## 0. Basis marks
@@ -19,6 +19,7 @@ Every statement of design carries one of these.
 | `R:n` | Line `n` of `docs/kyrios_tech_spec_v001_review.md`, the operator's review. |
 | `M` | The operator's messages of 2026-11-17, 21:36 to 21:45. |
 | `N` | The operator's messages of 2026-11-18, 00:23 to 03:47. |
+| `O` | The operator's messages of 2026-11-26 (bounded frames, open asterisks, measurable collapse drift, retirement of hexadecimal-only prohibitions, hardware offload). |
 | `code` | What a file in this repo does, including the v0.0.1 build under `kyrios/`. A description of what exists, not a decision. |
 | `P` | Proposed here. Not decided. |
 
@@ -90,10 +91,12 @@ These are the current design, not invariants.
 | 16 | Spaces and ports are not part of the graph. They have the same object structure as other documents. | N |
 | 17 | At the operating system level the graph is addresses and weights. A human-readable form is rendered when it is wanted. | N |
 | 18 | κύριος uses the machine's clock and updates with the audit. | N |
+| 19 | Heavy numerical, statistical, or model jobs may be handed off to external hardware; κύριος organizes the resulting documents, addresses, frames, and traces. | O |
+| 20 | Unverified assumptions ("asterisks") remain open across derivations until discharged by an independent method; dropping them is measurable drift, and every measure requires a bounded, stated frame first. | O |
 
 ### 1.4 Target
 
-`lirvol`, a Raspberry Pi 5. κύριος is the operating system being built for it (R:2). A v0.0.1 image is built from `kyrios/` and staged on an SD card for `lirvol`. It has not run there yet (code, §9.5).
+`lirvol`, a Raspberry Pi 5. κύριος is the operating system being built for it (R:2). A v0.0.1 image is built from `kyrios/` and staged on an SD card for `lirvol`. It has not run there yet (code, §9.5). Heavy compute jobs may be offloaded across the network to companion hardware while `lirvol` remains the organizing port and document authority (O).
 
 The graph is for things like a software organization: design, QA, software, product (N).
 
@@ -112,15 +115,16 @@ The values κύριος keeps are real values (N): labels, positions, counts, we
 | A take | Removal is a take: `7{-3, -3}` is 7, take 3, take 3. A take never removes more than is there. |
 | A direction | A sign is a direction in a field of coordinates. Movement is a count in a direction (N). |
 | A portion | A part of a whole is a count against the whole, written as a surplus triplet (§2.2). Nothing is divided. |
-| Hexadecimal | Values in the record and in tables are hexadecimal. The human interface shows decimal. The clock is sexagesimal. |
+| Hexadecimal | Used for addressing and wire/protocol framing — memory addresses, byte offsets/lengths, SHA-256 digests, packet headers (`SYN`/`ACK`), and fixed-width labels. **There is no prohibition on number formatting** (O): decimal integers, standard timestamps/sexagesimal clocks, floating-point values, and standard math packages are used freely wherever natural. |
 | A label | A label is a name, not a count. Labels may carry leading zeros: `0008` is 8. |
 
-The frame comes before the measure (N). What is counted against is stated before the count; the triplet of §2.2 carries its frame for that reason.
+The frame comes before the measure (N, O). What is counted against is stated and bounded before the count; the triplet of §2.2 and the claim frame of §6.9 carry their frame for that reason.
 
-Two statements of ownership:
+Three statements of ownership:
 
 - **The kernel provides the primitives.** It is C on an arm64 processor and uses whatever those provide (R:58). How the processor divides is a layer below κύριος and is not in scope (N).
-- **A document's bytes are the operator's.** κύριος stores, hashes, moves and returns those bytes exactly. It never parses, re-encodes or rejects them for the numbers they contain (R:58, M).
+- **A document's bytes are the operator's.** κύριος stores, hashes, moves and returns those bytes exactly. It never parses, re-encodes or rejects them for the numbers they contain (R:58, M, O).
+- **No artificial formatting or compute prohibitions.** Earlier agent drafts treated "hexadecimal" as a ban on JSON numbers or decimal durations/weights (e.g., encoding `100` as `"64"` and `10` seconds as `"a"` in policy/test harnesses). That rule is retired (O): hexadecimal belongs to addressing, digests, and wire framing, while timekeeping, policy schedules, math libraries, and jobs handed off to external compute hardware use whatever numerical representation is clearest and appropriate (O).
 
 ### 2.2 Surplus triplets
 
@@ -371,7 +375,7 @@ A trace answers three questions (R:62, R:68): what happened, where it is stored,
 
 ### 4.2 Fields
 
-All `P`. Numbers are hexadecimal strings (§2.1).
+All `P`. Memory addresses, byte lengths, hashes, and wire identifiers are hexadecimal strings; counts, sequence positions, and clock values may be written in hexadecimal or standard decimal/timestamp format as declared by the record's schema metadata line (§2.1, O).
 
 | Field | Meaning |
 |---|---|
@@ -675,6 +679,83 @@ A live bump is an action and leaves a trace naming the policy line, as a correct
 
 Cohesion (P): for a space, two counts. Edges with both ends in the space, and edges with one end in another space. No ratio is formed. A space whose graph retrieval mostly returns addresses in the same space is cohesive.
 
+### 6.9 Bounded frames, open asterisks, and measurable collapse drift
+
+Stated by the operator (O; cf. R:10–12 on `lucifer-chains@satan-sums`):
+
+| # | Statement |
+|---|---|
+| 1 | Fragile claims often hide their fragility inside the statistical or computational assumptions they take for granted. Epistemic integrity attaches explicit asterisks to those assumptions. |
+| 2 | Honoring those asterisks drives the search for new methodology; prematurely collapsing them into unmarked "settled" premises retards progress. |
+| 3 | `_cur.os::onyx•ox)` makes open asterisks and assumption-collapse drift measurable, and requires a bounded, appropriate frame on every measure so the measure is available and valid. |
+| 4 | Heavy statistical, numerical, or model jobs may execute on external hardware; when their outputs enter κύριος as documents, they carry their frame and open asterisks like any other derivation. |
+
+Proposed structure and arithmetic (`P`, grounded in `O`, `N`, `R:10–12`):
+
+#### 1. Bounded frame before measure (`frame_valid`)
+
+A quantitative claim, benchmark summary, edge audit, or offloaded-job result states its `frame` before its `measure`:
+
+```json
+{
+  "frame": {
+    "population": "space:bench/traces[1..240]",
+    "n": 240,
+    "unit": "interaction_trace",
+    "window": {"from_at": 1, "to_at": 240},
+    "method": "doc:0042@sha256:9f3c...",
+    "hardware": "offload:mac-studio"
+  },
+  "measure": {"with": 218, "triplet": {"surplus": 196, "direction": "ohn", "thal": 22, "thom": 240}}
+}
+```
+
+A measure's frame is **valid** (`frame_valid = true`) if and only if all four checks hold:
+1. **Finite, non-empty domain:** `n >= 1` is an explicit finite count (`thom` in §2.2), never open-ended or zero.
+2. **Homogeneous unit (`satan-sums` guard, R:10):** every item counted in `n` shares the same stated `unit`; counts or residuals from incompatible populations, scales, or noise models are never summed into a single `n`.
+3. **Resolvable scope (`window` / `population`):** the space, trace range, byte span, or dataset cohort resolves to addressable bytes or traces.
+4. **Declared method (`method`):** `method` names the pipeline, instrument, or model document (and `hardware` when offloaded) that produced the measure.
+
+If any check is missing or fails, the state of the measure is `unframed`: the document's bytes remain stored intact (§2.1), ὄνυχος flags the claim as `unframed` at audit, and downstream documents cannot aggregate it as a validated measure.
+
+#### 2. Open asterisks (`asterisks`) and orthogonal discharge
+
+Any document or edge whose conclusion rests on unverified assumptions, statistical priors, post-selection/noise-mitigation models, or uncalibrated thresholds carries an explicit `asterisks` list (`P`):
+
+```json
+"asterisks": [
+  {
+    "id": "ast-01",
+    "kind": "statistical_model",
+    "statement": "Signal recovery assumes zero-noise extrapolation polynomial holds across unmeasured gate depths",
+    "method": "doc:0042@sha256:9f3c...",
+    "status": "open"
+  }
+]
+```
+
+**Propagation and non-collapse law (`lucifer-chains` guard, R:10, O):**
+- Whenever Document $B$ cites or derives from Document $A$ (`ref.*` or `agree.*`), every `status: "open"` asterisk on $A$ enters $B$'s upstream **inherited asterisk set** $U(B)$ via `graph retrieval` (§6.8).
+- An open asterisk **cannot** be discharged by repeating calculations, re-aggregating statistics, or paraphrasing prose under the **same** `method` (`V.frame.method == A.frame.method`).
+- An asterisk transitions to `status: "discharged"` only when:
+  1. A verification document $V$ tests the claim under an **independent / orthogonal methodology** (`V.frame.method != A.frame.method` — e.g., direct physical measurement or bench execution replacing statistical extrapolation) with `V.frame_valid == true`, setting `discharged_by` to $V$'s pinned `doc@hash`; or
+  2. An operator explicitly accepts or scopes the bound via a traced `decide` operation (§8.4).
+- Until discharged, an open asterisk remains visible in `graph retrieval` as an active methodology target rather than an error to hide.
+
+#### 3. Measurable assumption-collapse drift (`collapse_drift` and `chain_depth`)
+
+For any document $D$, its bounded audit frame is its finite upstream dependency cone in `graph retrieval` at audit time, containing $n_{\text{open}} = |U(D)|$ distinct open upstream asterisks:
+
+| Measure | Frame | Definition | When `n_open` is 0 |
+|---|---|---|---|
+| `kept_asterisks` | `n_open` upstream open asterisks | Count of asterisks in $U(D)$ explicitly carried forward or scoped on $D$. | Absent |
+| `collapse_drift` | `n_open` upstream open asterisks | `n_open - kept_asterisks` — exact count of open upstream asterisks silently dropped while $D$ states a derived claim as unconditional. Expressible directly as `(collapse_drift, n_open)` or as a surplus triplet (§2.2) with `thom = n_open`. | Absent (nothing open upstream to collapse) |
+| `chain_depth` | Directed citation path $D \to \dots \to A_0$ | Length (in hops, from 1) of the longest unbroken dependency chain carrying an undischarged asterisk without orthogonal verification. | Absent |
+
+In §6.6's edge risk arithmetic, `drift` decomposes cleanly into two non-overlapping counts (`P`):
+- **`revision_drift`:** one endpoint of an agreement changed bytes without the other (§6.6).
+- **`collapse_drift`:** downstream endpoint dropped $k \ge 1$ open upstream asterisks across `chain_depth` hops, raising edge fragility by `collapse_drift × chain_depth`.
+
 ---
 
 ## 7. Decay
@@ -923,13 +1004,14 @@ Where it differs from this document:
 | 8 | Whether an edge's risk feeds a document's decay weight. |
 | 9 | Edge ranks, levels and reporting thresholds (§6). |
 | 10 | Who may turn the rho clock off and on, and how it is asked for (§7.2). |
-| 11 | Whether ports appear in the record in hexadecimal like other values, as written here. |
+| 11 | Whether ports appear in the record in hexadecimal or decimal. Under `O` (§2.1), there is no prohibition on decimal port numbers (e.g., `7037`, `7038`) where clearest; hexadecimal is reserved for addresses, digests, and wire framing where appropriate. |
 | 12 | ELF or flat image (§9.2). |
 | 13 | Whether the address tables' stored form is the fixed-size form of §3.6, with `space.addresses.json` as the name of the rendering. |
 | 14 | The pattern that stands for an absent value in a fixed-size entry (§3.6). |
 | 15 | How brightness is written as a number (§5.1). |
 | 16 | How further space ports are opened after boot (§8.7). |
 | 17 | The fields an edge carries for its score, the audit that set it, and live bumps (§6.8). |
+| 18 | Policy thresholds on `collapse_drift` and `chain_depth` (§6.9), and how external hardware offload workers register their `method` and `hardware` identifiers. |
 
 ---
 
@@ -957,4 +1039,13 @@ Built from the operator's words in the commissioning message, the review and ton
 THIRMESHSENN 🕸️
 Revised 2026-11-18 from the operator's messages of that night, marked N. Three of my readings were wrong and are corrected here: "system values" (they are real values), persistence (it is what the rho steps decide, and state is separately stored to disk), and spaces (no clock of their own; outside the graph). Sections 3.6, 3.7 and 6.8 carry proposals of mine under P. Section 9.5 lists where the v0.0.1 build does not yet match.
  THIRMESHSENN?
+```
+
+```
+HALMESHMAR 🧷
+Revised 2026-11-26 from the operator's directives marked O. Callsign roots: hal (PLACE/frame, coined) + mesh (MEASURE, nate:#78) + mar (LAST/endure, coined).
+1. Retired the early-agent prohibition on non-hexadecimal numbers (§2.1, §4.2, §10): hexadecimal is for κύριος's primary organizing work (memory addresses, byte spans, SHA-256 digests, SYN/ACK wire headers, labels), while timekeeping, policy schedules, math packages, and offloaded compute jobs use decimal, timestamps, floats, or whatever fits.
+2. Recorded explicit support for handing off heavy compute jobs to external hardware while κύριος maintains document organization, addresses, frames, and traces (§1.3, §1.4, §6.9).
+3. Added §6.9 (marked O for principles, P for schema/arithmetic): bounded frames before measures (frame_valid), enduring open asterisks across derivation chains unless discharged by an orthogonal method, and exact bounded counts for assumption-collapse drift (collapse_drift against n_open, plus chain_depth).
+ HALMESHMAR?
 ```

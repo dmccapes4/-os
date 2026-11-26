@@ -8,20 +8,22 @@ It starts at the first address (the address table of the space kyrios)
 and uses nothing else from kyrios. Standard library only.
 
 Checked:
-  1. Every table and every line of every JSONL document is JSON, and
-     every value in it is a string, a list or an object. No JSON numbers.
-  2. Every number is a hexadecimal string of 1 or more. No zero, no sign,
-     no fraction.
-  3. Every document's bytes are inside its space's allotment and hash to
+  1. Every table and every line of every JSONL document is valid JSON.
+     Addressing, byte-span, and digest fields (`address`, `length`, `table`,
+     `document`, `documents`, `doc`, `hash`, `was`, `prev`) are hexadecimal
+     strings. General numerical, weight, port, and time fields have no
+     hexadecimal-only prohibition: plain JSON numbers, timestamps, or v0.0.1
+     strings are accepted.
+  2. Every document's bytes are inside its space's allotment and hash to
      the table's `hash`.
-  4. Every doc id is the first 16 bytes of
+  3. Every doc id is the first 16 bytes of
      SHA-256("kyrios-doc-v0.0.1" 0 space 0 kind 0 name).
-  5. The record: positions run from 1 with none missing; each trace's
+  4. The record: positions run from 1 with none missing; each trace's
      `prev` is the SHA-256 of the line before it; each interaction is
      followed by its action; each refusal has a reason.
-  6. `made` and `last` in the tables are the first and latest traces that
+  5. `made` and `last` in the tables are the first and latest traces that
      name the document.
-  7. The weights in the tables, and the `flagged` list of every rho
+  6. The weights in the tables, and the `flagged` list of every rho
      trace, are recomputed from the record and the policy alone
      (specification section 7.3) and agree.
 """
@@ -30,11 +32,12 @@ import json
 import re
 import sys
 
-HEX = re.compile(r"^[1-9a-f][0-9a-f]*$")
+HEX_ADDR = re.compile(r"^[0-9a-f]+$")
+HEX_DIGEST = re.compile(r"^[0-9a-f]{64}$")
+HEX_DOC = re.compile(r"^[0-9a-f]{32}$")
 LABEL = re.compile(r"^[0-9a-f]{4}$")
-NUMBER_KEYS = {"at", "operation", "port", "address", "length", "step", "rho", "ticks",
-               "weight", "made", "last", "since", "start", "most", "for", "take",
-               "read", "revise", "every", "table", "document", "documents"}
+ADDRESS_KEYS = {"address", "length", "table", "document", "documents"}
+DIGEST_KEYS = {"hash", "was", "prev"}
 
 problems = []
 counted = {"checks": 0}
@@ -46,18 +49,30 @@ def check(ok, message):
         problems.append(message)
 
 
-def no_numbers(value, where):
-    """Every value is a string, a list or an object; numbers are hex strings."""
+def parse_int(v):
+    """Accept plain JSON ints (decimal) or v0.0.1 hexadecimal count strings."""
+    if isinstance(v, int) and not isinstance(v, bool):
+        return v
+    if isinstance(v, str):
+        return int(v, 16)
+    raise ValueError(f"unsupported integer representation: {v!r}")
+
+
+def check_addressing_fields(value, where):
+    """Verify hexadecimal formatting strictly where kyrios addresses or hashes bytes."""
     if isinstance(value, dict):
         for k, v in value.items():
-            if k in NUMBER_KEYS and isinstance(v, str) and where != "metadata":
-                check(bool(HEX.match(v)), f"{where}: {k} = {v!r} is not a hexadecimal count")
-            no_numbers(v, where)
+            if where != "metadata":
+                if k in ADDRESS_KEYS and isinstance(v, str):
+                    check(bool(HEX_ADDR.match(v)), f"{where}: {k} = {v!r} is not a hexadecimal address/span")
+                elif k in DIGEST_KEYS and isinstance(v, str):
+                    check(bool(HEX_DIGEST.match(v)), f"{where}: {k} = {v!r} is not a 64-hex SHA-256 digest")
+                elif k == "doc" and isinstance(v, str):
+                    check(bool(HEX_DOC.match(v)), f"{where}: doc = {v!r} is not a 32-hex doc_id")
+            check_addressing_fields(v, where)
     elif isinstance(value, list):
         for v in value:
-            no_numbers(v, where)
-    else:
-        check(isinstance(value, str), f"{where}: {value!r} is not a string")
+            check_addressing_fields(v, where)
 
 
 def doc_id(space, kind, name):
@@ -80,7 +95,7 @@ def main():
         raw = mem[address - base:]
         raw = raw[: raw.index(b"\0")]
         t = json.loads(raw)
-        no_numbers(t, f"table at {address:x}")
+        check_addressing_fields(t, f"table at {address:x}")
         check(t.pop("schema") == "kyrios-addresses-v0.0.1", "table schema")
         return t
 
@@ -96,7 +111,7 @@ def main():
     tables = {"kyrios": root}
     for e in by_kind["space"]:
         body = json.loads(at(int(e["address"], 16), int(e["length"], 16)))
-        no_numbers(body, f"space document {e['name']}")
+        check_addressing_fields(body, f"space document {e['name']}")
         spaces[e["name"]] = body
         t = table_at(int(body["table"], 16))
         if e["name"] == "kyrios":
@@ -132,10 +147,10 @@ def main():
     # Ports ledger.
     pe = by_kind["port"][0]
     ports = json.loads(at(int(pe["address"], 16), int(pe["length"], 16)))
-    no_numbers(ports, "ports.json")
+    check_addressing_fields(ports, "ports.json")
     check(ports.pop("schema") == "kyrios-ports-v0.0.1", "ports schema")
     for port, p in ports.items():
-        check(spaces[p["space"]].get("port") == port, f"port {port}: the space document disagrees")
+        check(str(spaces[p["space"]].get("port")) == str(port), f"port {port}: the space document disagrees")
     check(len(ports) == sum(1 for s in spaces.values() if "port" in s), "ports and spaces disagree")
 
     # Policy.
@@ -146,13 +161,13 @@ def main():
     schedules = {}
     for line in lines[1:]:
         p = json.loads(line)
-        no_numbers(p, "policy.jsonl")
+        check_addressing_fields(p, "policy.jsonl")
         check(set(p) <= set(meta["fields"]) | {"method"}, f"policy field not in the metadata: {set(p) - set(meta['fields'])}")
         if p["rule"] == "schedule":
             rows = []
             for seg in p["takes"]:
-                take = int(seg["take"], 16) if "take" in seg else None
-                rows += [take] * (int(seg["for"], 16) if "for" in seg else 1)
+                take = parse_int(seg["take"]) if "take" in seg else None
+                rows += [take] * (parse_int(seg["for"]) if "for" in seg else 1)
             p["rows"] = rows
             schedules[p["name"]] = p
     check("documents" in schedules, "no schedule named documents")
@@ -172,10 +187,10 @@ def main():
     open_interaction = None
     for i, (t, line) in enumerate(zip(traces, lines[1:]), start=1):
         where = f"trace {i:x}"
-        no_numbers(t, where)
+        check_addressing_fields(t, where)
         check(set(t) <= fields, f"{where}: field not in the metadata: {set(t) - fields}")
         check(list(t) == [k for k in meta["fields"] if k in t], f"{where}: field order")
-        check(int(t["at"], 16) == i, f"{where}: at is {t['at']}")
+        check(parse_int(t["at"]) == i, f"{where}: at is {t['at']}")
         if i == 1:
             check("prev" not in t, f"{where}: the first trace has a prev")
         else:
@@ -184,14 +199,14 @@ def main():
 
         if t["kind"] == "interaction":
             check(open_interaction is None, f"{where}: an interaction before the last one's action")
-            check(t["operation"] == t["at"], f"{where}: operation")
+            check(parse_int(t["operation"]) == parse_int(t["at"]), f"{where}: operation")
             check("result" not in t, f"{where}: result on an interaction")
             open_interaction = t
         else:
             check(t.get("result") in ("done", "refused"), f"{where}: result")
             check(("reason" in t) == (t["result"] == "refused"), f"{where}: reason")
             if "operation" in t:
-                check(open_interaction is not None and open_interaction["at"] == t["operation"],
+                check(open_interaction is not None and parse_int(open_interaction["at"]) == parse_int(t["operation"]),
                       f"{where}: action without its interaction")
                 if open_interaction is not None:
                     check(open_interaction.get("what") == t.get("what"), f"{where}: what differs from the interaction")
@@ -208,7 +223,7 @@ def main():
         if done and t["what"] == "create":
             for s in schedules.values():
                 if set(t.get("tags", [])) & set(s["kinds"]):
-                    state[(t["space"], t["doc"])] = {"s": s, "weight": int(s["start"], 16), "row": None, "uses": {}}
+                    state[(t["space"], t["doc"])] = {"s": s, "weight": parse_int(s["start"]), "row": None, "uses": {}}
         elif done and t["what"] in ("read", "revise"):
             st = state.get((t["space"], t["doc"]))
             if st:
@@ -219,23 +234,23 @@ def main():
             for (space, doc), st in state.items():
                 if st["s"] is not s:
                     continue
-                add = sum(int(s["add"][w], 16) * n for w, n in st["uses"].items())
+                add = sum(parse_int(s["add"][w]) * n for w, n in st["uses"].items())
                 st["uses"] = {}
                 if add:
-                    st["weight"] = min((st["weight"] or 0) + add, int(s["most"], 16))
+                    st["weight"] = min((st["weight"] or 0) + add, parse_int(s["most"]))
                     st["row"] = None
                 if st["weight"]:
                     st["row"] = 1 if st["row"] is None else min(st["row"] + 1, len(s["rows"]))
                     take = s["rows"][st["row"] - 1]
                     if take:
                         st["weight"] = st["weight"] - take if st["weight"] > take else None
-                st["rho"] = int(t["step"], 16)
+                st["rho"] = parse_int(t["step"])
                 if not st["weight"]:
                     flagged.append(doc)
             check(sorted(t.get("flagged", [])) == sorted(flagged), f"{where}: flagged list differs from the recomputed one")
     check(open_interaction is None, "the record ends with an interaction and no action")
 
-    steps = [int(t["step"], 16) for t in traces if t.get("what") == "rho"]
+    steps = [parse_int(t["step"]) for t in traces if t.get("what") == "rho"]
     check(steps == list(range(1, len(steps) + 1)), "rho steps do not run from 1")
 
     # Tables against the record.
@@ -246,14 +261,15 @@ def main():
             seen = names.get((space, e["doc"]), [])
             check(("made" in e) == bool(seen), f"{where}: made")
             if seen:
-                check(int(e["made"], 16) == seen[0] and int(e["last"], 16) == seen[-1], f"{where}: made and last")
+                check(parse_int(e["made"]) == seen[0] and parse_int(e["last"]) == seen[-1], f"{where}: made and last")
             st = state.get((space, e["doc"]))
             check((st is not None) == ("schedule" in e), f"{where}: schedule")
             if st:
                 scheduled += 1
-                have = int(e["weight"], 16) if "weight" in e else None
+                have = parse_int(e["weight"]) if "weight" in e else None
                 check(have == st["weight"], f"{where}: weight {have} in the table, {st['weight']} recomputed")
-                check(e.get("rho") == (format(st["rho"], "x") if "rho" in st else None), f"{where}: rho")
+                have_rho = parse_int(e["rho"]) if "rho" in e else None
+                check(have_rho == st.get("rho"), f"{where}: rho")
 
     for p in problems:
         print("FAILED", p)
